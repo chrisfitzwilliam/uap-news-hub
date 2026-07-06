@@ -1,0 +1,30 @@
+[
+  {
+    "id": "google-news-uap",
+    "name": "Google News UAP Search",
+    "url": "https://news.google.com/rss/search?q=UAP",
+    "active": true,
+    "priority": 1,
+    "reason": "Live search feed for current UAP coverage.",
+    "added_by": "manual",
+    "added_at": "2026-07-06T00:00:00Z",
+    "last_checked_at": null,
+    "etag": null,
+    "last_modified": null,
+    "consecutive_failures": 0
+  },
+  {
+    "id": "google-news-ufo",
+    "name": "Google News UFO Search",
+    "url": "https://news.google.com/rss/search?q=UFO",
+    "active": true,
+    "priority": 2,
+    "reason": "Live search feed for current UFO coverage.",
+    "added_by": "manual",
+    "added_at": "2026-07-06T00:00:00Z",
+    "last_checked_at": null,
+    "etag": null,
+    "last_modified": null,
+    "consecutive_failures": 0
+  }
+]

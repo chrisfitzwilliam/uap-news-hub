@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["slug", "title", "dek", "content_type", "confidence", "claim_labels", "sources", "article_markdown", "related_claims", "should_publish"],
+  "properties": {
+    "slug": {"type": "string"},
+    "title": {"type": "string"},
+    "dek": {"type": "string"},
+    "content_type": {"type": "string"},
+    "confidence": {"type": "string"},
+    "claim_labels": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "article_markdown": {"type": "string"},
+    "related_claims": {
+      "type": "array"
+    },
+    "should_publish": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}

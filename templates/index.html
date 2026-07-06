@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<header><h1>UFO / UAP News Hub</h1><p>Latest validated items.</p></header>
+<section>
+{% for article in articles %}
+  <article>
+    <h2><a href="/articles/{{ article.slug }}.html">{{ article.title }}</a></h2>
+    <p>{{ article.dek }}</p>
+    <p class="meta">{{ article.published_at }} | confidence: {{ article.confidence }}</p>
+  </article>
+{% endfor %}
+</section>
+{% endblock %}

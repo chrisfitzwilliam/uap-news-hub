@@ -1,0 +1,30 @@
+[
+  {
+    "id": "reddit-ufos",
+    "name": "r/UFOs",
+    "url": "https://www.reddit.com/r/UFOs/new/.rss",
+    "active": true,
+    "priority": 1,
+    "reason": "High-signal Reddit feed for UAP discussion.",
+    "added_by": "manual",
+    "added_at": "2026-07-06T00:00:00Z",
+    "last_checked_at": null,
+    "etag": null,
+    "last_modified": null,
+    "consecutive_failures": 0
+  },
+  {
+    "id": "reddit-uap",
+    "name": "r/UAP",
+    "url": "https://www.reddit.com/r/UAP/new/.rss",
+    "active": true,
+    "priority": 2,
+    "reason": "Secondary Reddit feed for UAP discussion.",
+    "added_by": "manual",
+    "added_at": "2026-07-06T00:00:00Z",
+    "last_checked_at": null,
+    "etag": null,
+    "last_modified": null,
+    "consecutive_failures": 0
+  }
+]

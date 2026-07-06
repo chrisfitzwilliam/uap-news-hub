@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "packet_id",
+    "decision",
+    "content_type",
+    "importance",
+    "novelty",
+    "risk_level",
+    "reason",
+    "required_sources",
+    "do_not_publish_reason"
+  ],
+  "properties": {
+    "packet_id": {"type": "string"},
+    "decision": {"type": "string"},
+    "content_type": {"type": "string"},
+    "importance": {"type": "string"},
+    "novelty": {"type": "string"},
+    "risk_level": {"type": "string"},
+    "reason": {"type": "string"},
+    "required_sources": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "do_not_publish_reason": {
+      "type": ["string", "null"]
+    }
+  },
+  "additionalProperties": true
+}

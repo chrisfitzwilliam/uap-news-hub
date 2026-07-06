@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["video_id", "segments"],
+  "properties": {
+    "video_id": {"type": "string"},
+    "segments": {"type": "array"}
+  },
+  "additionalProperties": true
+}

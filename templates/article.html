@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<article>
+  <h1>{{ article.title }}</h1>
+  <p>{{ article.dek }}</p>
+  <p class="meta">{{ article.published_at }} | confidence: {{ article.confidence }}</p>
+  <section class="body">{{ article.body_html | safe }}</section>
+  <section>
+    <h2>Sources</h2>
+    <ul>
+    {% for source_url in article.source_urls %}
+      <li><a href="{{ source_url }}">{{ source_url }}</a></li>
+    {% endfor %}
+    </ul>
+  </section>
+</article>
+{% endblock %}

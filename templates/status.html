@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Status</h1>
+<ul>
+  <li>Last hourly run: {{ status.last_hourly_run }}</li>
+  <li>Last daily run: {{ status.last_daily_run }}</li>
+  <li>Last publish: {{ status.last_publish }}</li>
+</ul>
+{% endblock %}
