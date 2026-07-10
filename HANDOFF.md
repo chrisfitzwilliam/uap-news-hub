@@ -1,5 +1,19 @@
 # Handoff
 
+## Completed Redesign and Domain Setup
+
+The visual redesign of the public site is complete. 
+
+Approved and implemented decisions:
+- Publication Name: **Skyledger**
+- Custom Domain: **skyledger.space** (managed via Cloudflare DNS and deployed via GitHub Pages).
+- Visual direction: **Night Sky Observatory** — near-black, lunar white, restrained electric cyan, scientific plotting/details, spacious premium typography, and no cartoon-alien or generic purple AI styling.
+- Audience: balanced between curious mainstream readers and serious UAP researchers, leaning slightly toward serious research.
+- Homepage hierarchy: **Briefing + Evidence Grid** — an accessible lead briefing first, with evidence library, claim tracker, YouTube intel, sources, and methodology immediately visible.
+- Existing evidence-first, local-first, deterministic, fail-closed publishing architecture remains unchanged by the visual redesign.
+
+The domain and styling are active and live at `https://skyledger.space`.
+
 ## Completed launch implementation
 
 - Public source and deployment are live: [repository](https://github.com/chrisfitzwilliam/uap-news-hub), [Pages site](https://chrisfitzwilliam.github.io/uap-news-hub/), and Actions-based Pages with HTTPS enabled.

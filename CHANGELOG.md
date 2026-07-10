@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Completed full-site redesign implementation using the "Night Sky Observatory" visual language and "Briefing + Evidence Grid" homepage hierarchy.
+- Configured custom domain `skyledger.space` using Cloudflare DNS and GitHub Pages.
+- Resumed redesign and domain work, finalized the publication name as Skyledger, and completed implementation.
+- Began full-site redesign discovery and selected the Night Sky Observatory visual language, a balanced research-leaning audience, and a Briefing + Evidence Grid homepage hierarchy.
+- Recorded the restart handoff for publication/domain discovery with the user-level `domain-hunter` skill and added `.superpowers/` to `.gitignore` for local brainstorming artifacts.
 - Created and published the public `chrisfitzwilliam/uap-news-hub` repository with Actions-based GitHub Pages deployment and HTTPS.
 - Added six primary-source-linked launch articles, bringing the public baseline to seven evidence-first pieces; verified the live Pages homepage after deployment.
 - Reconciled launch content: replaced public rough-draft naming with a final evidence-standards briefing and moved the uncorroborated tiny-transcript YouTube item to the supervised queue.

@@ -2,6 +2,12 @@
 
 An evidence-first, local-first static newsroom. Local Windows jobs collect and assess source material with AGY and local transcription; only validated editorial JSON is committed to `main`. GitHub Actions tests, builds, and deploys the generated site to GitHub Pages.
 
+## Redesign completed (2026-07-10)
+
+The visual redesign has been successfully implemented and deployed. The direction is **Night Sky Observatory**: near-black surfaces, lunar-white typography, restrained electric-cyan scientific accents, spacious editorial rhythm, and no cartoon-alien styling. The audience bridges curious readers and serious UAP researchers, leaning slightly toward the research audience. The homepage hierarchy is **Briefing + Evidence Grid**: one accessible lead briefing followed immediately by evidence-library, claim-tracker, YouTube-intel, source, and methodology entry points.
+
+The publication name is **Skyledger** and the custom domain is deployed to `skyledger.space`. The domain is managed via Cloudflare DNS pointing to GitHub Pages.
+
 ## Editorial safety
 
 - The site reports source-backed claims, not confirmations.
