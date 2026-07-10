@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="hero">
+  <p class="eyebrow">Section index</p>
+  <h1>Sections</h1>
+  <p class="lede">Each section groups a specific reporting lane from the pipeline.</p>
+</header>
+<section class="panel">
+  <div class="card-grid">
+  {% if sections %}
+  {% for section in sections %}
+    <article class="card">
+      <h2><a href="{{ section.url }}">{{ section.title }}</a></h2>
+      <p>{{ section.description }}</p>
+      <p class="meta">{{ section.count }} item{{ 's' if section.count != 1 else '' }}</p>
+    </article>
+  {% endfor %}
+  {% else %}
+    <p class="empty-state">No sections have been published yet.</p>
+  {% endif %}
+  </div>
+</section>
+{% endblock %}

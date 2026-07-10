@@ -1,9 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Status</h1>
-<ul>
-  <li>Last hourly run: {{ status.last_hourly_run }}</li>
-  <li>Last daily run: {{ status.last_daily_run }}</li>
-  <li>Last publish: {{ status.last_publish }}</li>
-</ul>
+<header class="hero">
+  <p class="eyebrow">Pipeline status</p>
+  <h1>Status</h1>
+  <p class="lede">The latest run timestamps and queue health.</p>
+</header>
+<section class="panel">
+  {% if status.stale %}<p class="empty-state">Warning: the last successful pipeline run is stale. The displayed content may not reflect current source activity.</p>{% endif %}
+  <ul class="status-list">
+    <li>Last hourly run: {{ status.last_hourly_run }}</li>
+    <li>Last daily run: {{ status.last_daily_run }}</li>
+    <li>Last publish: {{ status.last_publish }}</li>
+    <li>Queued items: {{ status.queued_items }}</li>
+    <li>Rejected items: {{ status.rejected_items }}</li>
+  </ul>
+</section>
 {% endblock %}

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Any
@@ -30,17 +31,41 @@ def extract_json_document(text: str) -> Any:
     return json.loads(cleaned)
 
 
-def call_agy(prompt_text: str, *, timeout_seconds: int = 720) -> str:
+def _prompt_argument(prompt_text: str, *, prompt_dir: Path | None = None, max_arg_length: int = 12000) -> str:
+    if len(prompt_text) <= max_arg_length:
+        return prompt_text
+
+    prompt_dir = Path(prompt_dir) if prompt_dir is not None else Path("data") / "agy-prompts"
+    prompt_dir.mkdir(parents=True, exist_ok=True)
+    digest = hashlib.sha256(prompt_text.encode("utf-8")).hexdigest()[:16]
+    prompt_path = prompt_dir / f"agy-prompt-{digest}.md"
+    prompt_path.write_text(prompt_text, encoding="utf-8")
+    return (
+        "Read the full prompt from this UTF-8 file inside the workspace and follow it exactly. "
+        "Return only the requested output format. "
+        f"Prompt file: {prompt_path}"
+    )
+
+
+def call_agy(
+    prompt_text: str,
+    *,
+    timeout_seconds: int = 720,
+    prompt_dir: Path | None = None,
+    run: Callable[..., Any] | None = None,
+) -> str:
+    run = run or subprocess.run
+    prompt_arg = _prompt_argument(prompt_text, prompt_dir=prompt_dir)
     command = [
         "agy",
         "--print",
+        prompt_arg,
         "--add-dir",
         ".",
         "--print-timeout",
         "10m",
-        prompt_text,
     ]
-    completed = subprocess.run(
+    completed = run(
         command,
         check=True,
         capture_output=True,

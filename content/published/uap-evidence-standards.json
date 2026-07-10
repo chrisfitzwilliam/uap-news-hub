@@ -1,0 +1,20 @@
+{
+  "body_markdown": "# Why the evidence bar matters\n\nThis site uses official NASA and AARO materials as a baseline rather than treating unverified claims as established fact.\n\nThe common thread across these source materials is not that UAP reports should be ignored. It is that the public record needs better collection methods, clearer metadata, and careful separation between observation, interpretation, and speculation.\n\n# What is known\n\nNASA's independent study team published a final report in September 2023 focused on how the agency could support a more scientific approach to UAP. The report emphasized data quality, transparency, and methods that can be checked by independent observers.\n\nAARO has also published official materials about historical UAP records and reporting channels. Those materials are useful for tracking what the government has actually said, while still leaving room for open questions about individual cases.\n\n# What this means for coverage\n\nA report can be newsworthy without proving a cause, and an unresolved case remains labeled as unresolved until stronger evidence is available. This publication reports source-backed claims; it does not present a claim as confirmation merely because it is widely repeated.\n\n# Evidence and sources\n\nThe evidence base for this briefing is limited to official source material from NASA and AARO. Future reporting adds source packets, transcript references, timestamps, and validation records before publication.",
+  "claim_labels": [
+    "official_statement",
+    "analysis"
+  ],
+  "confidence": "medium",
+  "content_type": "latest_briefing",
+  "dek": "How the newsroom distinguishes source-backed reporting, claims, and unresolved questions.",
+  "published_at": "2026-07-06T23:45:00Z",
+  "review_result": "pass",
+  "slug": "uap-evidence-standards",
+  "source_urls": [
+    "https://science.nasa.gov/uap/",
+    "https://science.nasa.gov/wp-content/uploads/2023/09/uap-independent-study-team-final-report.pdf",
+    "https://www.aaro.mil/Congressional-Press-Products/",
+    "https://media.defense.gov/2024/Mar/08/2003409233/-1/-1/0/DOPSR-2024-0263-AARO-HISTORICAL-RECORD-REPORT-VOLUME-1-2024.PDF"
+  ],
+  "title": "Setting the Evidence Bar for UAP Coverage"
+}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="hero">
+  <p class="eyebrow">Section</p>
+  <h1>{{ section.title }}</h1>
+  <p class="lede">{{ section.description }}</p>
+</header>
+<section class="panel">
+  <div class="story-list">
+  {% if section.articles %}
+  {% for article in section.articles %}
+    <article class="story-card">
+      <p class="kicker">{{ article.section_title }}</p>
+      <h2><a href="{{ article.article_url }}">{{ article.title }}</a></h2>
+      <p>{{ article.dek }}</p>
+      <div class="story-meta">
+        <span class="confidence-badge {{ article.confidence_class }}">{{ article.confidence_label }}</span>
+        <span class="meta">{{ article.published_at }}</span>
+      </div>
+    </article>
+  {% endfor %}
+  {% else %}
+    <p class="empty-state">No articles are published in this section yet.</p>
+  {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,13 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
-<header><h1>UFO / UAP News Hub</h1><p>Latest validated items.</p></header>
-<section>
-{% for article in articles %}
-  <article>
-    <h2><a href="/articles/{{ article.slug }}.html">{{ article.title }}</a></h2>
-    <p>{{ article.dek }}</p>
-    <p class="meta">{{ article.published_at }} | confidence: {{ article.confidence }}</p>
-  </article>
-{% endfor %}
+<header class="hero">
+  <p class="eyebrow">Evidence-first intelligence desk</p>
+  <h1>UFO / UAP News Hub</h1>
+  <p class="lede">Latest validated items, section indexes, and claim-tracker surfaces.</p>
+</header>
+<section class="panel">
+  <div class="panel-heading">
+    <h2>Sections</h2>
+    <p>Browse the current editorial lanes.</p>
+  </div>
+  <div class="card-grid">
+  {% if sections %}
+  {% for section in sections %}
+    <article class="card">
+      <h3><a href="{{ section.url }}">{{ section.title }}</a></h3>
+      <p>{{ section.description }}</p>
+      <p class="meta">{{ section.count }} item{{ 's' if section.count != 1 else '' }}</p>
+    </article>
+  {% endfor %}
+  {% else %}
+    <p class="empty-state">No sections have been published yet.</p>
+  {% endif %}
+  </div>
+</section>
+<section class="panel">
+  <div class="panel-heading">
+    <h2>Latest items</h2>
+    <p>The freshest validated pieces.</p>
+  </div>
+  <div class="story-list">
+  {% if articles %}
+  {% for article in articles %}
+    <article class="story-card">
+      <p class="kicker">{{ article.section_title }}</p>
+      <h3><a href="{{ article.article_url }}">{{ article.title }}</a></h3>
+      <p>{{ article.dek }}</p>
+      <div class="story-meta">
+        <span class="confidence-badge {{ article.confidence_class }}">{{ article.confidence_label }}</span>
+        <span class="meta">{{ article.published_at }}</span>
+      </div>
+    </article>
+  {% endfor %}
+  {% else %}
+    <p class="empty-state">No validated items are available yet.</p>
+  {% endif %}
+  </div>
 </section>
 {% endblock %}

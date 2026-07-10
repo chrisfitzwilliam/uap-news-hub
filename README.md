@@ -1,58 +1,60 @@
 # UFO / UAP News Hub
 
-Local-first pipeline for collecting UFO/UAP source material, validating it deterministically, and generating a static site.
+An evidence-first, local-first static newsroom. Local Windows jobs collect and assess source material with AGY and local transcription; only validated editorial JSON is committed to `main`. GitHub Actions tests, builds, and deploys the generated site to GitHub Pages.
 
-## Current Status
+## Editorial safety
 
-- Repository-local pytest settings are in `pytest.ini` so tests use `.pytest-tmp/` and avoid the machine-level pytest cache/temp ACL problem.
-- `scripts/run_hourly.py` and `scripts/run_daily.py` now call a real site pipeline helper instead of returning dummy success.
-- The site pipeline validates published content, builds the static site, and records run history in SQLite.
-- GitHub Pages publishing now has a real validated deploy helper instead of a blind copy step.
-- Source ingestion now has a real fetch helper and script entrypoint instead of a no-op placeholder.
-- Source ingestion now prefers `rss_url` when present so YouTube channel entries can keep both page URLs and feed URLs.
-- Registry entries now persist `etag`, `last_modified`, and `last_checked_at` after ingestion.
-- Source ingestion now retries transient fetch failures with backoff before giving up.
-- Hourly and daily runners now ingest sources before the build/publish step.
-- The daily runner now also downloads queued YouTube packets and transcribes downloaded audio before the site build.
-- The daily runner now also runs AGY-backed YouTube transcript analysis and article drafting before the site build.
-- The daily runner now tracks AGY call totals for the editorial pass and stops once the conservative budget is spent.
-- The daily runner now also runs AGY factual review and sends non-passing YouTube Intel items to `content/queue/`.
-- Validation now writes per-item records under `data/validation/` and checks queued items as well as published content.
-- Source ingestion now increments failure counters and auto-deactivates repeated failures.
-- Source ingestion can stop at a packet cap for controlled runs.
-- The registry now includes a small live-feed seed set for Google News and Reddit.
-- The registry now also includes an initial live-feed YouTube priority set, and `scripts/ingest_sources.py` reads `youtube_channels.json`.
-- The latest code changes were paused after YouTube download/transcription, AGY transcript analysis/article drafting, daily-run integration, AGY budgeting, factual review, source triage, and validation hardening, before static-site expansion and deeper scheduler tuning.
+- The site reports source-backed claims, not confirmations.
+- `content/published/` is public, versioned editorial record. `content/queue/` and `content/rejected/` are auditable non-public records.
+- `data/state.db`, transcripts, media, AGY artifacts, logs, and generated `site/` are local runtime artifacts and are not versioned.
+- A malformed AGY response, timeout, schema failure, review failure, exhausted budget, lock, or dirty unrelated Git change fails closed.
+- `UAP_WHISPER_MODEL=small` is the final-candidate default. `tiny` transcripts are exploratory only and must be re-run before publication.
 
-## Rules
+## Modes and emergency control
 
-- No paid APIs.
-- Use local tooling first.
-- Keep all pipeline timestamps in UTC.
-- Keep downloaded media out of git.
+Set these in a local `.env` (or persistent environment), then start in `supervised` for seven reviewed daily runs.
 
-## Project layout
+```powershell
+UAPNEWSHUB_PIPELINE_MODE=supervised
+UAPNEWSHUB_ENABLE_PUBLISH=0
+UAPNEWSHUB_EMERGENCY_STOP=0
+UAPNEWSHUB_SITE_URL=https://OWNER.github.io/REPOSITORY
+```
 
-- `content/` holds source registry files and published editorial content.
-- `data/` holds SQLite state and pipeline artifacts.
-- `site/` is generated output for GitHub Pages.
-- `templates/` contains versioned site templates.
-- `schemas/` contains JSON schemas for AGY outputs and content validation.
-- `scripts/` contains pipeline entrypoints.
+- `dry-run`: ingests and evaluates but never writes public or queue content and never commits.
+- `supervised`: creates auditable candidates in `content/queue/`; publishing remains disabled.
+- `autonomous`: may publish only when `UAPNEWSHUB_ENABLE_PUBLISH=1` and `UAPNEWSHUB_EMERGENCY_STOP=0`.
 
-## Handoff Files
+The persistent `UAPNEWSHUB_EMERGENCY_STOP=1` prevents all automatic publication while retaining diagnostics and status output.
 
-- [CHANGELOG.md](./CHANGELOG.md)
-- [TODO.md](./TODO.md)
-- [HANDOFF.md](./HANDOFF.md)
+## Local commands
 
-## Setup
+```powershell
+pip install -r requirements.txt
+python scripts/check_environment.py
+pytest -q
+python scripts/validate_outputs.py
+python scripts/build_site.py
+python scripts/run_hourly.py
+python scripts/run_daily.py
+```
 
-1. Create a virtual environment if desired.
-2. Install dependencies with `pip install -r requirements.txt`.
-3. Copy `.env.example` to `.env` and fill local secrets.
-4. Run `python scripts/check_environment.py`.
+Install idempotent scheduled jobs after the supervised run is accepted:
 
-## Build
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/install_task_scheduler.ps1 -Action install
+powershell -ExecutionPolicy Bypass -File scripts/install_task_scheduler.ps1 -Action status
+powershell -ExecutionPolicy Bypass -File scripts/install_task_scheduler.ps1 -Action uninstall
+```
 
-Run `python scripts/build_site.py` to generate the static site from validated content.
+Jobs use Task Scheduler's `IgnoreNew` overlap policy and the Python stale-lock recovery guard. Structured event logs are written to `data/logs/`; the status page flags stale successful runs.
+
+## GitHub Pages launch
+
+1. Create a public repository, push this branch as `main`, and select **GitHub Actions** as the Pages source.
+2. Add a protected `github-pages` environment if desired. The workflow in `.github/workflows/pages.yml` runs validation/tests, builds with `UAPNEWSHUB_SITE_URL`, uploads `site/`, then deploys it.
+3. Set the repository Actions variable `UAPNEWSHUB_SITE_URL` to the final Pages or custom-domain URL.
+4. For a custom domain, configure it in GitHub before DNS, verify the domain, add GitHub's required records, and enable HTTPS.
+5. Keep the pipeline in `supervised` for seven consecutive reviewed daily runs. Only then set `UAPNEWSHUB_PIPELINE_MODE=autonomous` and `UAPNEWSHUB_ENABLE_PUBLISH=1`.
+
+The local publisher commits only changes beneath `content/published/`, `content/queue/`, or `content/rejected/`, then pushes `main`. Any other dirty path blocks publication.

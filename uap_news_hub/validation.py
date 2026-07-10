@@ -14,6 +14,7 @@ from .utils import utc_now
 
 ALLOWED_CONTENT_TYPES = {
     "latest_briefing",
+    "breaking_brief",
     "breaking_watch",
     "youtube_intel",
     "source_digest",
@@ -108,6 +109,7 @@ def validate_article_payload(
     *,
     phrase_config_path: Path | None = None,
     allowed_review_results: set[str] | None = None,
+    allow_current_index_record: bool = False,
 ) -> ValidationResult:
     errors: list[str] = []
     validator = Draft202012Validator(ARTICLE_SCHEMA)
@@ -133,12 +135,20 @@ def validate_article_payload(
             continue
         normalized_urls.append(normalize_url(url))
 
-    if payload.get("slug") and store.slug_exists(str(payload["slug"])):
+    current_slug = str(payload.get("slug", ""))
+    current_index_record = store.published_record(current_slug) if allow_current_index_record and current_slug else None
+
+    if current_slug and store.slug_exists(current_slug) and current_index_record is None:
         errors.append("slug already published")
-    if payload.get("title") and store.title_exists(str(payload["title"])):
+    if payload.get("title"):
+        title_owner = store.title_owner(str(payload["title"]))
+    else:
+        title_owner = None
+    if title_owner is not None and title_owner != current_slug:
         errors.append("title already published")
     for url in normalized_urls:
-        if store.source_url_published(url):
+        source_owner = store.source_url_owner(url)
+        if source_owner is not None and source_owner != current_slug:
             errors.append(f"source_url already published: {url}")
 
     body = str(payload.get("body_markdown", ""))
@@ -220,6 +230,7 @@ def _validate_content_dir(
             store,
             phrase_config_path=phrase_config_path,
             allowed_review_results=allowed_review_results,
+            allow_current_index_record=subdir_name == "published",
         )
         warnings.extend(result.warnings)
         validation_record = {

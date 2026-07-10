@@ -1,0 +1,47 @@
+{
+  "body_markdown": "# Candidate: congressional UAP transparency interview\n\nThis transcript-derived candidate is held for supervised review. It is based on a local automatic transcript of a NewsNation Reality Check interview with Rep. Eric Burlison.\n\nThe interview concerns congressional interest in UAP records, briefings, and disclosure. It does not independently establish the existence or origin of any claimed material.\n\n# Evidence limits\n\nThe candidate relies on one YouTube source and a local automatic transcript produced with the exploratory tiny Whisper model. It requires a small-model retranscription and corroboration from congressional filings, committee records, official releases, or NewsNation supporting materials before publication.",
+  "claim_labels": [
+    "reported_claim",
+    "analysis",
+    "transcript_derived"
+  ],
+  "claims": [
+    {
+      "claim": "The interview discusses congressional exposure to non-public UAP-related material or briefings.",
+      "speaker": "UNKNOWN",
+      "timestamp_start": "00:02:58",
+      "timestamp_end": "00:03:04"
+    },
+    {
+      "claim": "The interview frames requested files as a concrete transparency question: either records exist or they do not.",
+      "speaker": "UNKNOWN",
+      "timestamp_start": "00:11:17",
+      "timestamp_end": "00:12:21"
+    },
+    {
+      "claim": "The interview links the UAP Caucus to continued pressure for transparency.",
+      "speaker": "UNKNOWN",
+      "timestamp_start": "00:18:56",
+      "timestamp_end": "00:19:22"
+    }
+  ],
+  "confidence": "low",
+  "content_type": "youtube_intel",
+  "dek": "Held for supervised review pending a final transcript and independent source checks.",
+  "diarization_failed": true,
+  "duration_seconds": 1261,
+  "metadata": {
+    "channel": "NewsNation",
+    "transcript_model": "openai-whisper:tiny",
+    "video_duration_seconds": 1261,
+    "video_id": "fsse0ZYw31s"
+  },
+  "published_at": "2026-07-07T06:45:00Z",
+  "review_result": "needs_more_sources",
+  "reviewed_at": "2026-07-07T06:45:00Z",
+  "slug": "burlison-uap-transparency-interview",
+  "source_urls": [
+    "https://www.youtube.com/watch?v=fsse0ZYw31s"
+  ],
+  "title": "Candidate: Rep. Eric Burlison Interview on UAP Transparency"
+}

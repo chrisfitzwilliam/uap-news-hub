@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from uap_news_hub.state import StateStore
-from uap_news_hub.validation import validate_article_payload
+from uap_news_hub.validation import validate_article_payload, validate_published_content
 
 
 def test_validate_article_rejects_missing_source_url_and_duplicate_source(tmp_path):
@@ -42,6 +42,54 @@ def test_validate_article_rejects_missing_source_url_and_duplicate_source(tmp_pa
         duplicate_result = validate_article_payload(duplicate_payload, store)
         assert not duplicate_result.passed
         assert "already published" in " ".join(duplicate_result.errors)
+
+
+def test_validate_published_content_allows_the_current_index_record(tmp_path):
+    root = tmp_path
+    published_dir = root / "content" / "published"
+    published_dir.mkdir(parents=True)
+    article = {
+        "slug": "sample-briefing",
+        "title": "Sample Briefing",
+        "content_type": "latest_briefing",
+        "source_urls": ["https://example.com/story"],
+        "confidence": "high",
+        "body_markdown": "Body",
+        "review_result": "pass",
+    }
+    (published_dir / "sample-briefing.json").write_text(json.dumps(article), encoding="utf-8")
+
+    with StateStore(root / "data" / "state.db") as store:
+        store.initialize()
+        store.record_published_index(
+            slug="sample-briefing",
+            title="Sample Briefing",
+            content_type="latest_briefing",
+            source_urls=["https://example.com/story"],
+            published_at="2026-07-06T18:00:00Z",
+        )
+
+        result = validate_published_content(root / "content", store)
+
+    assert result.passed
+
+
+def test_validate_article_accepts_breaking_brief_content_type(tmp_path):
+    with StateStore(tmp_path / "state.db") as store:
+        store.initialize()
+        payload = {
+            "slug": "breaking-brief",
+            "title": "Breaking Brief",
+            "content_type": "breaking_brief",
+            "source_urls": ["https://example.com/story"],
+            "confidence": "medium",
+            "body_markdown": "Body",
+            "review_result": "pass",
+        }
+
+        result = validate_article_payload(payload, store)
+
+    assert result.passed
 
 
 def test_validate_article_rejects_long_quotes_and_bad_timestamps(tmp_path):

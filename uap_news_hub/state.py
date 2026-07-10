@@ -57,7 +57,36 @@ class StateStore:
 
     def initialize(self) -> None:
         self.connection.executescript(SCHEMA)
+        self.bootstrap_published_content()
         self.connection.commit()
+
+    def bootstrap_published_content(self, content_dir: Path | None = None) -> None:
+        """Recreate the disposable publication index from versioned editorial JSON."""
+        if content_dir is None:
+            # data/state.db -> repository root/content
+            content_dir = self.db_path.parent.parent / "content"
+        published_dir = Path(content_dir) / "published"
+        if not published_dir.exists():
+            return
+        # The editorial files are authoritative. Remove indexes for articles no longer public
+        # (for example a supervised candidate moved back into the queue).
+        self.connection.execute("DELETE FROM published_index")
+        for path in published_dir.glob("*.json"):
+            try:
+                article = json.loads(path.read_text(encoding="utf-8"))
+                self.connection.execute(
+                    """INSERT INTO published_index (slug, title, content_type, source_urls, published_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(slug) DO UPDATE SET title=excluded.title, content_type=excluded.content_type,
+                    source_urls=excluded.source_urls, published_at=excluded.published_at""",
+                    (
+                        str(article["slug"]), str(article["title"]), str(article["content_type"]),
+                        json.dumps(article.get("source_urls", []), sort_keys=True), str(article["published_at"]),
+                    ),
+                )
+            except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
+                # Validation reports malformed editorial records; initialization must remain available for diagnostics.
+                continue
 
     def close(self) -> None:
         self.connection.close()
@@ -125,9 +154,20 @@ class StateStore:
         row = self._fetch_one("SELECT 1 FROM published_index WHERE slug = ?", (slug,))
         return row is not None
 
+    def published_record(self, slug: str) -> dict[str, Any] | None:
+        row = self._fetch_one("SELECT * FROM published_index WHERE slug = ?", (slug,))
+        if row is None:
+            return None
+        row["source_urls"] = json.loads(row["source_urls"])
+        return row
+
     def title_exists(self, title: str) -> bool:
         row = self._fetch_one("SELECT 1 FROM published_index WHERE lower(title) = lower(?)", (title,))
         return row is not None
+
+    def title_owner(self, title: str) -> str | None:
+        row = self._fetch_one("SELECT slug FROM published_index WHERE lower(title) = lower(?)", (title,))
+        return str(row["slug"]) if row else None
 
     def published_source_urls(self) -> set[str]:
         rows = self.connection.execute("SELECT source_urls FROM published_index").fetchall()
@@ -139,6 +179,14 @@ class StateStore:
 
     def source_url_published(self, url: str) -> bool:
         return normalize_url(url) in self.published_source_urls()
+
+    def source_url_owner(self, url: str) -> str | None:
+        normalized = normalize_url(url)
+        rows = self.connection.execute("SELECT slug, source_urls FROM published_index").fetchall()
+        for row in rows:
+            if normalized in {normalize_url(source_url) for source_url in json.loads(row["source_urls"])}:
+                return str(row["slug"])
+        return None
 
     def record_run(
         self,

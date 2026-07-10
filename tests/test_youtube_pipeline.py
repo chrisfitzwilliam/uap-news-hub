@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from uap_news_hub.state import StateStore
-from uap_news_hub.youtube_pipeline import download_youtube_queue, transcribe_downloads
+from uap_news_hub.youtube_pipeline import download_youtube_queue, openai_whisper_transcriber, transcribe_downloads
 from uap_news_hub.urls import item_key_for_url
 
 
@@ -128,3 +128,40 @@ def test_transcribe_downloads_writes_normalized_transcript(tmp_path):
     metadata = json.loads((download_dir / "metadata.json").read_text(encoding="utf-8"))
     assert metadata["status"] == "transcribed"
     assert metadata["transcript_json"] == str(transcript_json)
+
+
+def test_openai_whisper_transcriber_normalizes_cli_style_segments(tmp_path, monkeypatch):
+    audio_path = tmp_path / "audio.wav"
+    audio_path.write_bytes(b"wav")
+    monkeypatch.setenv("UAP_WHISPER_MODEL", "tiny")
+
+    class FakeModel:
+        def transcribe(self, audio, **kwargs):
+            assert audio == str(audio_path)
+            assert kwargs["fp16"] is False
+            return {
+                "language": "en",
+                "segments": [
+                    {"start": 0.0, "end": 1.25, "text": "First line"},
+                    {"start": 1.25, "end": 2.5, "text": "Second line"},
+                ],
+            }
+
+    class FakeWhisper:
+        @staticmethod
+        def load_model(model_name):
+            assert model_name == "tiny"
+            return FakeModel()
+
+    payload = openai_whisper_transcriber(audio_path, {"video_id": "abc123"}, whisper_module=FakeWhisper)
+
+    assert payload == {
+        "video_id": "abc123",
+        "language": "en",
+        "model": "openai-whisper:tiny",
+        "diarization": "unknown",
+        "segments": [
+            {"speaker": "UNKNOWN", "start": 0.0, "end": 1.25, "text": "First line"},
+            {"speaker": "UNKNOWN", "start": 1.25, "end": 2.5, "text": "Second line"},
+        ],
+    }

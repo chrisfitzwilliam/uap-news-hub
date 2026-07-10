@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="hero"><p class="eyebrow">UFO / UAP News Hub</p><h1>{{ page.heading }}</h1><p class="lede">{{ page.dek }}</p></header>
+<section class="panel prose">{{ page.body_html | safe }}</section>
+{% endblock %}

@@ -6,6 +6,7 @@ from typing import Callable, Any
 
 from .build import build_site
 from .locking import acquire_lock, release_lock
+from .observability import record_event
 from .state import StateStore
 from .utils import utc_now
 from .validation import validate_published_content
@@ -20,9 +21,13 @@ class PipelineResult:
 def run_hourly(lock_path: Path, *, run: Callable[[], PipelineResult]) -> PipelineResult:
     lock = acquire_lock(lock_path, max_age_minutes=55)
     if not lock.acquired:
+        record_event(lock_path.parents[1], "run_skipped", level="warning", run_type="hourly", reason=lock.reason)
         return PipelineResult(result="skipped_lock", details={"reason": lock.reason})
     try:
-        return run()
+        result = run()
+        if lock.stale_recovered:
+            record_event(lock_path.parents[1], "stale_lock_recovered", level="warning", run_type="hourly")
+        return result
     finally:
         release_lock(lock_path)
 
@@ -30,9 +35,13 @@ def run_hourly(lock_path: Path, *, run: Callable[[], PipelineResult]) -> Pipelin
 def run_daily(lock_path: Path, *, run: Callable[[], PipelineResult]) -> PipelineResult:
     lock = acquire_lock(lock_path, max_age_minutes=6 * 60)
     if not lock.acquired:
+        record_event(lock_path.parents[1], "run_skipped", level="warning", run_type="daily", reason=lock.reason)
         return PipelineResult(result="skipped_lock", details={"reason": lock.reason})
     try:
-        return run()
+        result = run()
+        if lock.stale_recovered:
+            record_event(lock_path.parents[1], "stale_lock_recovered", level="warning", run_type="daily")
+        return result
     finally:
         release_lock(lock_path)
 
@@ -55,6 +64,7 @@ def run_site_pipeline(root: Path, *, run_type: str, agy_calls: int = 0) -> Pipel
                 result="failed",
                 error_summary="; ".join(validation.errors[:5]),
             )
+            record_event(root, "run_failed", level="error", run_type=run_type, stage="validation", errors=validation.errors[:5])
             return PipelineResult(result="failed", details={"stage": "validation", "errors": validation.errors})
 
         finished_at = utc_now()
@@ -73,4 +83,5 @@ def run_site_pipeline(root: Path, *, run_type: str, agy_calls: int = 0) -> Pipel
             result="success",
             agy_calls=agy_calls,
         )
+        record_event(root, "run_success", run_type=run_type, agy_calls=agy_calls)
     return PipelineResult(result="success", details={"mode": run_type})

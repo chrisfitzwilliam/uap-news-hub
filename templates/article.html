@@ -1,15 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
-<article>
-  <h1>{{ article.title }}</h1>
-  <p>{{ article.dek }}</p>
-  <p class="meta">{{ article.published_at }} | confidence: {{ article.confidence }}</p>
-  <section class="body">{{ article.body_html | safe }}</section>
-  <section>
+<article class="story">
+  <header class="story-header">
+    <p class="eyebrow">{{ article.section_title }}</p>
+    <h1>{{ article.title }}</h1>
+    <p class="lede">{{ article.dek }}</p>
+    <div class="story-meta">
+      <span class="confidence-badge {{ article.confidence_class }}">{{ article.confidence_label }}</span>
+      <span class="meta">{{ article.published_at }}</span>
+    </div>
+    {% if article.claim_labels %}
+    <ul class="claim-labels" aria-label="Claim labels">
+      {% for label in article.claim_labels %}
+      <li>{{ label }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </header>
+  <section class="body prose">{{ article.body_html | safe }}</section>
+  <section class="source-panel">
     <h2>Sources</h2>
     <ul>
-    {% for source_url in article.source_urls %}
-      <li><a href="{{ source_url }}">{{ source_url }}</a></li>
+    {% for source in article.source_items %}
+      <li><a href="{{ source.url }}">{{ source.label }}</a></li>
     {% endfor %}
     </ul>
   </section>

@@ -8,6 +8,8 @@ from typing import Any, Callable
 from jsonschema import Draft202012Validator
 
 from .agy import AgyRunResult, run_agy_worker
+from .observability import record_event
+from .settings import PipelineSettings, load_settings
 from .state import StateStore
 from .urls import normalize_url
 from .utils import utc_now, write_json
@@ -38,6 +40,30 @@ class EditorialRunResult:
     outcomes: list[EditorialOutcome]
     agy_calls: int
     budget_exhausted: bool
+
+
+def chunk_transcript(transcript: dict[str, Any], *, max_chars: int) -> list[dict[str, Any]]:
+    """Keep speaker/timestamp segments intact while bounding AGY input size."""
+    if max_chars < 1000:
+        raise ValueError("transcript chunk size must be at least 1000 characters")
+    chunks: list[dict[str, Any]] = []
+    current: list[dict[str, Any]] = []
+    size = 0
+    for segment in transcript.get("segments", []):
+        if not isinstance(segment, dict):
+            continue
+        text = str(segment.get("text", "")).strip()
+        if not text:
+            continue
+        segment_size = len(text) + 80
+        if current and size + segment_size > max_chars:
+            chunks.append({"video_id": transcript.get("video_id"), "source_url": transcript.get("source_url"), "segments": current})
+            current, size = [], 0
+        current.append(segment)
+        size += segment_size
+    if current:
+        chunks.append({"video_id": transcript.get("video_id"), "source_url": transcript.get("source_url"), "segments": current})
+    return chunks or [{"video_id": transcript.get("video_id"), "source_url": transcript.get("source_url"), "segments": []}]
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -101,6 +127,7 @@ def _run_item(
     transcript_path: Path,
     metadata_path: Path,
     runner: Callable[..., AgyRunResult],
+    settings: PipelineSettings,
 ) -> EditorialOutcome:
     transcript = _load_json(transcript_path)
     metadata = _load_json(metadata_path)
@@ -118,16 +145,33 @@ def _run_item(
     draft_run_dir = root / "data" / "agy-runs" / "latest" / "youtube" / video_id / "draft"
     review_run_dir = root / "data" / "agy-runs" / "latest" / "youtube" / video_id / "review"
 
-    analysis_prompt = _render_prompt(
-        "youtube_analysis.md",
-        packet=packet,
-        metadata=metadata,
-        transcript=transcript,
-        extra={"source_url": source_url},
-    )
-    analysis_result = runner(analysis_prompt, save_dir=analysis_run_dir)
-    analysis = analysis_result.parsed if isinstance(analysis_result.parsed, dict) else {}
-    _validate_payload(analysis, YOUTUBE_ANALYSIS_SCHEMA)
+    chunks = chunk_transcript(transcript, max_chars=settings.transcript_chunk_chars)
+    if len(chunks) == 1:
+        analysis_prompt = _render_prompt("youtube_analysis.md", packet=packet, metadata=metadata, transcript=chunks[0], extra={"source_url": source_url})
+        analysis_result = runner(analysis_prompt, save_dir=analysis_run_dir)
+        analysis = analysis_result.parsed if isinstance(analysis_result.parsed, dict) else {}
+        _validate_payload(analysis, YOUTUBE_ANALYSIS_SCHEMA)
+        analysis_calls = analysis_result.call_count
+    else:
+        chunk_analyses: list[dict[str, Any]] = []
+        analysis_calls = 0
+        for number, chunk in enumerate(chunks, start=1):
+            chunk_dir = analysis_run_dir / f"chunk-{number:03d}"
+            prompt = _render_prompt("youtube_analysis.md", packet=packet, metadata=metadata, transcript=chunk, extra={"source_url": source_url, "chunk": number, "chunk_count": len(chunks)})
+            result = runner(prompt, save_dir=chunk_dir)
+            parsed = result.parsed if isinstance(result.parsed, dict) else {}
+            _validate_payload(parsed, YOUTUBE_ANALYSIS_SCHEMA)
+            chunk_analyses.append(parsed)
+            analysis_calls += result.call_count
+        aggregate_prompt = _render_prompt(
+            "youtube_analysis.md", packet=packet, metadata=metadata,
+            transcript={"video_id": video_id, "source_url": source_url, "segments": []},
+            extra={"source_url": source_url, "chunk_analyses": chunk_analyses, "instruction": "Create one source-grounded aggregate. Do not invent facts absent from the chunk analyses."},
+        )
+        aggregate = runner(aggregate_prompt, save_dir=analysis_run_dir / "aggregate")
+        analysis = aggregate.parsed if isinstance(aggregate.parsed, dict) else {}
+        _validate_payload(analysis, YOUTUBE_ANALYSIS_SCHEMA)
+        analysis_calls += aggregate.call_count
 
     draft_prompt = _render_prompt(
         "article_draft.md",
@@ -155,21 +199,25 @@ def _run_item(
     review_result_value = str(review.get("review_result", "reject"))
     article["review_result"] = review_result_value
     article["reviewed_at"] = utc_now()
-    if review_result_value == "pass" and draft.get("should_publish", False):
+    can_publish = settings.may_publish
+    if review_result_value == "pass" and draft.get("should_publish", False) and can_publish:
         article["published_at"] = article["reviewed_at"]
         destination_dir = root / "content" / "published"
     else:
         article["queued_at"] = article["reviewed_at"]
         destination_dir = root / "content" / "queue"
+        if review_result_value == "pass" and draft.get("should_publish", False):
+            article["publication_hold"] = "dry_run" if settings.mode == "dry-run" else "publish_not_enabled" if not settings.publishing_enabled else "emergency_stop"
 
     article_path: Path | None = None
-    destination_dir.mkdir(parents=True, exist_ok=True)
-    article_path = destination_dir / f"{article['slug']}.json"
-    write_json(article_path, article)
+    if settings.mode != "dry-run":
+        destination_dir.mkdir(parents=True, exist_ok=True)
+        article_path = destination_dir / f"{article['slug']}.json"
+        write_json(article_path, article)
 
     with StateStore(root / "data" / "state.db") as state:
         state.initialize()
-        if review_result_value == "pass" and draft.get("should_publish", False):
+        if review_result_value == "pass" and draft.get("should_publish", False) and can_publish:
             state.record_published_index(
                 slug=article["slug"],
                 title=article["title"],
@@ -187,7 +235,7 @@ def _run_item(
         analysis_run_dir=analysis_run_dir,
         draft_run_dir=draft_run_dir,
         review_run_dir=review_run_dir,
-        call_count=analysis_result.call_count + draft_result.call_count + review_result.call_count,
+        call_count=analysis_calls + draft_result.call_count + review_result.call_count,
     )
 
 
@@ -197,8 +245,10 @@ def run_youtube_editorial_pipeline(
     runner: Callable[..., AgyRunResult] = run_agy_worker,
     max_items: int | None = None,
     budget_limit: int | None = None,
+    settings: PipelineSettings | None = None,
 ) -> EditorialRunResult:
     root = Path(root)
+    settings = settings or PipelineSettings("autonomous", True, False, "", 20, 80, 4, 2, 3, 25, "small", 14000)
     transcript_root = root / "data" / "transcripts"
     download_root = root / "data" / "downloads"
     if not transcript_root.exists():
@@ -213,12 +263,18 @@ def run_youtube_editorial_pipeline(
             break
         if budget_limit is not None and (budget_limit - agy_calls) < MIN_CALLS_PER_ITEM:
             budget_exhausted = True
+            record_event(root, "agy_budget_exhausted", level="warning", budget_limit=budget_limit, agy_calls=agy_calls)
             break
         video_id = transcript_path.stem
         metadata_path = download_root / video_id / "metadata.json"
         if not metadata_path.exists():
             continue
-        outcome = _run_item(root, transcript_path=transcript_path, metadata_path=metadata_path, runner=runner)
+        try:
+            outcome = _run_item(root, transcript_path=transcript_path, metadata_path=metadata_path, runner=runner, settings=settings)
+        except Exception as exc:
+            record_event(root, "editorial_item_failed", level="error", video_id=video_id, error=str(exc), mode=settings.mode)
+            processed += 1
+            continue
         outcomes.append(outcome)
         agy_calls += outcome.call_count
         processed += 1

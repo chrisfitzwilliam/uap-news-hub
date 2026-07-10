@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="hero">
+  <p class="eyebrow">Monitored video sources</p>
+  <h1>YouTube Channel Analysis</h1>
+  <p class="lede">Synopsis and analysis staging for the ten monitored UFO/UAP YouTube channels.</p>
+</header>
+<section class="panel">
+  <div class="metric-row">
+    <div><strong>{{ dashboard.channel_count }}</strong><span>channels</span></div>
+    <div><strong>{{ dashboard.packet_count }}</strong><span>staged episodes</span></div>
+    <div><strong>{{ dashboard.download_count }}</strong><span>downloads</span></div>
+    <div><strong>{{ dashboard.transcript_count }}</strong><span>transcripts</span></div>
+  </div>
+</section>
+<section class="panel">
+  <div class="panel-heading">
+    <h2>Channels</h2>
+    <p>Local status by monitored source.</p>
+  </div>
+  <div class="channel-grid">
+  {% for channel in dashboard.channels %}
+    <article class="channel-card">
+      <div class="channel-card__head">
+        <div>
+          <p class="kicker">{{ channel.category_label }}</p>
+          <h3><a href="{{ channel.url }}">{{ channel.name }}</a></h3>
+        </div>
+        <span class="priority-badge">#{{ channel.priority }}</span>
+      </div>
+      <p>{{ channel.reason }}</p>
+      <div class="story-meta">
+        <span class="meta">{{ channel.download_label }}</span>
+        <span class="meta">{{ channel.transcript_label }}</span>
+      </div>
+      {% if channel.episodes %}
+      <ul class="episode-list">
+      {% for episode in channel.episodes %}
+        <li>
+          <a href="{{ episode.url }}">{{ episode.title }}</a>
+          <span>{{ episode.status_label }}</span>
+        </li>
+      {% endfor %}
+      </ul>
+      {% else %}
+        <p class="empty-state">No local episodes staged yet.</p>
+      {% endif %}
+    </article>
+  {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -2,13 +2,27 @@
 
 ## Unreleased
 
+- Reconciled launch content: replaced public rough-draft naming with a final evidence-standards briefing and moved the uncorroborated tiny-transcript YouTube item to the supervised queue.
+- Made SQLite runtime state local-only and able to bootstrap its publication index from versioned editorial JSON.
+- Added bounded transcript chunking and aggregate analysis for long YouTube recordings.
+- Added configured pipeline modes, safety caps, publication enablement, and a persistent emergency stop.
+- Added durable JSONL observability, Windows-toast notification support, idempotent Task Scheduler commands, source-only guarded Git publishing, and an Actions-based GitHub Pages workflow.
+- Added launch pages/metadata, RSS discovery, robots, and stale-run status warnings.
+
 - Added `pytest.ini` so pytest uses a repo-local temp dir and skips the broken cache provider on this machine.
 - Added `run_site_pipeline` to validate published content, build the site, and record run history in SQLite.
 - Wired `scripts/run_hourly.py` and `scripts/run_daily.py` to the site pipeline helper.
+- Fixed the daily runner to call the structured source-triage pipeline directly instead of treating the CLI wrapper exit code as an AGY call-count object.
+- Expanded the static site with section index pages, richer article pages, RSS, sitemap, queue/rejected counts, and stale-file cleanup on rebuild.
 - Improved site building with a proper Jinja loader fallback and safer status timestamp handling.
 - Added `validate_published_content` to validate the published content directory as a batch.
+- Fixed published-content validation so the current article can match its own `published_index` row while duplicates from other slugs are still rejected.
+- Added `breaking_brief` to the validator's allowed content types to match the builder and triage output.
 - Added a real publish helper and wired `scripts/publish_github_pages.py` to it.
 - Added publish tests for validated deploy success and fail-closed malformed content.
+- Added a publish guard that fails closed when unexpected dirty source changes are present before deploy.
+- Updated the environment checker to accept either the `yt-dlp` CLI or the installed Python `yt_dlp` package.
+- Made `HF_TOKEN` conditional on `UAP_DIARIZATION_ENABLED` instead of mandatory for non-diarization local runs.
 - Added a real ingestion fetch helper, conditional header support, and a script entrypoint that uses it.
 - Added ingestion tests for conditional GET headers, packet writing, and script orchestration.
 - Added registry persistence for `etag`, `last_modified`, and `last_checked_at` after ingestion.
@@ -33,3 +47,14 @@
 - Added validation hardening for queue and published content, including claim quote/timestamp checks and per-item validation records.
 - Wired the daily runner to ingest, download YouTube media, transcribe audio, draft YouTube Intel articles, review them, account for AGY calls, and then build the site.
 - Added regression tests using the live YouTube URL `https://www.youtube.com/watch?v=A2-y_HasHEw`.
+- Added the first reviewable rough draft article at `content/published/rough-draft-uap-evidence-standards.json`.
+- Expanded the monitored YouTube registry to 10 active channels, including Ross Coulthart / NewsNation Reality Check and American Alchemy / Jesse Michels.
+- Staged the latest YouTube source packets locally and retried failed downloads once.
+- Recorded the latest local YouTube staging state: 31 packets, 29 downloaded audio files, 29 transcripts, and 2 unresolved download failures.
+- Completed the downloaded YouTube transcription backlog with two- and three-worker concurrent `openai-whisper` runs.
+- Added an `openai-whisper` transcription fallback when `faster-whisper` cannot import because PyAV native extensions are blocked locally.
+- Added a generated YouTube channel-analysis dashboard at `site/youtube/index.html`.
+- Added build coverage for the generated YouTube dashboard and pipeline coverage for the OpenAI Whisper fallback adapter.
+- Added a first transcript-derived YouTube Intel rough draft for the NewsNation / Reality Check Burlison interview.
+- Hardened the AGY wrapper for large transcript prompts by writing oversized prompts to `data/agy-prompts/` and passing AGY a short file-reference prompt.
+- Fixed the AGY CLI argument order so the prompt immediately follows `--print`.

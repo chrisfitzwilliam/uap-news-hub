@@ -7,8 +7,12 @@ __pycache__/
 .ruff_cache/
 *.pyc
 data/downloads/
+data/source-packets/
+data/state.db
+data/run.lock
 data/logs/
 data/agy-runs/
+data/agy-prompts/
 data/transcripts/
 data/validation/
 site/

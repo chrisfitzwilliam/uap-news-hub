@@ -1,11 +1,15 @@
 # AGY-Driven UFO/UAP News Hub — Implementation Plan (v2)
 
+> **Launch implementation update (2026-07-10):** The historic plan below originally described a `gh-pages` worktree/force-push flow. The implemented launch design supersedes that choice: generated `site/` output remains local and ignored; only validated, allowlisted editorial JSON is committed to `main`; `.github/workflows/pages.yml` tests, builds, uploads, and deploys the Pages artifact. Runtime SQLite, media, transcripts, AGY artifacts, and logs are local-only. See `README.md` and `HANDOFF.md` for the active operating procedure.
+
 ## Current Handoff
 
-- Latest completed slice: repo-local pytest config, a real site-pipeline helper, a validated GitHub Pages publish helper, a real ingestion fetch helper, registry metadata persistence for conditional GETs, retry/backoff for transient fetch failures, scheduler orchestration that ingests before build/publish, failure bookkeeping with auto-deactivation, packet-cap handling, live-feed registry seed entries including the initial YouTube priority group, a real YouTube download worker, a transcript writer, AGY-backed YouTube transcript analysis/article drafting, factual review, batch source triage, queue/publish routing, validation records, and budget-aware AGY call accounting for daily runs.
-- Added shared published-content validation, safer site status timestamp handling, publish tests, ingestion tests, YouTube worker tests, triage tests, editorial pipeline tests, validation-record tests, budget-cap tests, factual-review tests, and scheduler coverage.
-- The next agent should start by running `pytest -q`, then move into static-site expansion and deeper scheduler tuning.
+- Latest completed slice: repo-local pytest config, a real site-pipeline helper, a validated publish helper with dirty-source fail-closed guard, a real ingestion fetch helper, registry metadata persistence for conditional GETs, retry/backoff for transient fetch failures, scheduler orchestration that ingests before build/publish, failure bookkeeping with auto-deactivation, packet-cap handling, live-feed registry seed entries including the 10-channel YouTube priority group, a real YouTube download worker, a transcript writer, `openai-whisper` fallback transcription, AGY large-prompt file handoff, AGY-backed YouTube transcript analysis/article drafting, factual review, batch source triage, queue/publish routing, validation records, budget-aware AGY call accounting for daily runs, expanded static-site generation with section indexes, article surfaces, RSS, sitemap, status counts, a dedicated YouTube channel dashboard, a baseline reviewable rough draft article, and a first transcript-derived YouTube Intel rough draft.
+- Added shared published-content validation, current-index duplicate handling, safer site status timestamp handling, publish tests, ingestion tests, YouTube worker tests, triage tests, editorial pipeline tests, validation-record tests, budget-cap tests, factual-review tests, environment-check tests, and scheduler coverage.
+- Current local YouTube staging state: 31 source packets, 29 downloaded audio files, 29 completed transcripts, and 2 unresolved download failures after one retry pass.
+- The next agent should start by running `pytest -q`, `python scripts/validate_outputs.py`, and `python scripts/build_site.py`, then review the rough drafts and `site/youtube/index.html`, add transcript chunking/summarization for AGY, draft more YouTube Intel pieces from the completed transcripts, and move into scheduler dry-run plus real `gh-pages` deploy wiring.
 - Host-specific note: `.pytest_cache` is ACL-locked on this machine, so the repo uses `.pytest-tmp/` and disables the cache provider in `pytest.ini`.
+- Host-specific note: `faster-whisper` imports are blocked by local Windows application-control policy through PyAV native extension loading, so the working local fallback is `openai-whisper`.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` or `superpowers:executing-plans` to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -13,7 +17,7 @@
 
 **Architecture:** Static-site generator backed by local Markdown/JSON content files and a SQLite state database. Local scheduled scripts collect sources, download/transcribe YouTube videos, ask AGY to triage/analyze/draft/review content, validate outputs deterministically, rebuild the site, and auto-push to GitHub Pages only when validation passes.
 
-**Tech Stack:** Windows PowerShell, Python 3.12, AGY CLI (`agy`), `yt-dlp`, `ffmpeg`, `faster-whisper`, WhisperX or `pyannote.audio`, SQLite (pipeline state), Jinja2 (templating), `jsonschema` (validation), Markdown/JSON content files, static HTML/CSS/JS, GitHub Pages, Windows Task Scheduler.
+**Tech Stack:** Windows PowerShell, Python 3.12, AGY CLI (`agy`), `yt-dlp`, `ffmpeg`, `faster-whisper` with `openai-whisper` fallback, optional WhisperX or `pyannote.audio`, SQLite (pipeline state), Jinja2 (templating), `jsonschema` (validation), Markdown/JSON content files, static HTML/CSS/JS, GitHub Pages, Windows Task Scheduler.
 
 **v2 changes:** Added Phase 0 prerequisites, SQLite state store, YouTube download hardening (bot detection/rate caps), AGY budget guard, stale-lock handling, media retention policy, GitHub Pages branch strategy to prevent repo bloat, failure alerting, Claim Tracker data model, feed politeness rules, UTC timestamp standard, and a Known Risks section.
 
@@ -75,6 +79,10 @@ Shorter developing-news cards produced by hourly checks. These should be conserv
 
 Analysis of monitored UFO/UAP YouTube channels. Each entry should include video metadata, publication time, channel, transcript-derived summary, key claims, speaker-labeled excerpts, and source links.
 
+### YouTube Channel Analysis
+
+A dedicated `/youtube/index.html` dashboard for the 10 monitored channels. It should show why each channel is watched, the latest locally staged episodes, download status, transcript status, and enough context for a reviewer to decide which channel or episode deserves the next article draft.
+
 ### Source Digest
 
 Daily digest of notable activity across news feeds, Reddit/public forums, YouTube channels, and AGY-discovered source changes.
@@ -124,6 +132,7 @@ Create the project as a static site plus local automation pipeline:
 |   |   |-- js/app.js
 |   |   `-- img/
 |   |-- articles/
+|   |-- youtube/
 |   |-- briefings/
 |   |-- youtube-intel/
 |   |-- source-digest/
@@ -132,7 +141,8 @@ Create the project as a static site plus local automation pipeline:
 |   |-- base.html
 |   |-- article.html
 |   |-- index.html
-|   |-- section_index.html
+|   |-- sections/
+|   |-- youtube/
 |   `-- status.html
 |-- content/
 |   |-- published/
@@ -712,7 +722,7 @@ Use AGY as a constrained worker, not as an unrestricted site operator.
 Recommended invocation pattern:
 
 ```powershell
-agy --print --add-dir . --print-timeout 10m "<prompt text here>"
+agy --print "<prompt text here>" --add-dir . --print-timeout 10m
 ```
 
 Worker wrapper script: `scripts/run_agy_worker.py`
@@ -721,7 +731,9 @@ Wrapper responsibilities:
 
 - Load prompt file.
 - Inject source packet path and output schema.
-- Run `agy --print` with a hard subprocess timeout (default 12m — slightly above `--print-timeout` so the wrapper always wins).
+- Run `agy --print` with the prompt immediately after `--print`, followed by flags such as `--add-dir` and `--print-timeout`.
+- For large transcript prompts, write the prompt to `data/agy-prompts/` and pass AGY a short instruction pointing at the prompt file.
+- Run with a hard subprocess timeout (default 12m — slightly above `--print-timeout` so the wrapper always wins).
 - Save raw AGY response to `data/agy-runs/<run_id>/raw.txt`.
 - Extract/validate JSON response against the stage schema.
 - Save parsed response to `data/agy-runs/<run_id>/parsed.json`.
@@ -952,13 +964,14 @@ Never publish:
 
 ### Phase 6: Static Site Build
 
-- [ ] Build index page.
-- [ ] Build article pages.
-- [ ] Build Breaking Watch, YouTube Intel, Source Digest, and Claim Tracker pages.
-- [ ] Build status page.
-- [ ] Add RSS feed, sitemap, `.nojekyll`, and meta/OG tags.
-- [ ] Add professional intelligence-briefing theme.
-- [ ] Add golden-file determinism test (rebuild == byte-identical).
+- [x] Build index page.
+- [x] Build article pages.
+- [x] Build section index pages for currently populated content types.
+- [x] Build status page.
+- [x] Add RSS feed, sitemap, `.nojekyll`, and meta/OG tags.
+- [x] Add professional intelligence-briefing theme.
+- [x] Add golden-file determinism test (rebuild == byte-identical).
+- [ ] Add richer dedicated layouts for Breaking Watch, YouTube Intel, Source Digest, and Claim Tracker once those lanes have real content.
 
 ### Phase 7: Scheduling And Publishing
 
@@ -966,7 +979,8 @@ Never publish:
 - [ ] Add daily runner.
 - [ ] Add lock-file protection with stale-lock recovery.
 - [ ] Add failure notification script.
-- [ ] Add publish script with `gh-pages` squash deploy.
+- [x] Add validated publish helper with fail-closed dirty-source guard.
+- [ ] Replace local `_gh_pages` staging copy with `gh-pages` squash deploy.
 - [ ] Add dry-run mode.
 - [ ] Add Task Scheduler installer script.
 - [ ] Test local run before enabling auto-push.
@@ -996,7 +1010,7 @@ Test without live paid APIs.
 
 Required tests:
 
-- Environment checker detects missing `agy`, `ffmpeg`, `yt-dlp`, Python packages, and `HF_TOKEN`.
+- Environment checker detects missing `agy`, `ffmpeg`, `yt-dlp` or Python `yt_dlp`, Python packages, and `HF_TOKEN` when diarization is enabled.
 - Ingestion writes valid source packets from fixture feeds.
 - URL normalization collapses tracking-param and format variants to one key.
 - Duplicate detection prevents duplicate packets (state-DB backed).
@@ -1005,6 +1019,7 @@ Required tests:
 - Site builder creates article HTML with source links.
 - Site builder is deterministic: two builds from identical content are byte-identical (golden-file test).
 - Publish script refuses to push when validation fails.
+- Publish script refuses to proceed when unexpected dirty source changes are present.
 - Stale lock is recovered; live lock causes clean `skipped_lock` exit.
 - Budget guard stops AGY calls at the cap and requeues remaining packets.
 
@@ -1015,6 +1030,7 @@ Manual smoke tests:
 - Run one real YouTube download/transcription.
 - Run one AGY worker against a saved packet.
 - Build site locally and open `site/index.html`.
+- Review the rough draft at `site/articles/rough-draft-uap-evidence-standards.html`.
 - Confirm every article has source links and confidence labels.
 - Kill a run mid-flight and confirm the next run recovers (stale lock + resume from `seen_items` status).
 

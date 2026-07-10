@@ -289,7 +289,10 @@ def default_transcriber(audio_path: Path, metadata: dict[str, Any]) -> dict[str,
     try:
         from faster_whisper import WhisperModel
     except Exception as exc:  # pragma: no cover - depends on local install
-        raise RuntimeError("faster_whisper is required for transcription") from exc
+        try:
+            return openai_whisper_transcriber(audio_path, metadata)
+        except Exception as fallback_exc:  # pragma: no cover - depends on local install
+            raise RuntimeError("faster_whisper or openai-whisper is required for transcription") from fallback_exc
 
     model_name = os.environ.get("UAP_WHISPER_MODEL", "small")
     model = WhisperModel(model_name, device="auto", compute_type="int8")
@@ -308,6 +311,40 @@ def default_transcriber(audio_path: Path, metadata: dict[str, Any]) -> dict[str,
         "video_id": metadata.get("video_id") or "",
         "language": getattr(info, "language", "en"),
         "model": model_name,
+        "diarization": "unknown",
+        "segments": segments,
+    }
+
+
+def openai_whisper_transcriber(
+    audio_path: Path,
+    metadata: dict[str, Any],
+    *,
+    whisper_module=None,
+) -> dict[str, Any]:
+    if whisper_module is None:
+        try:
+            import whisper as whisper_module
+        except Exception as exc:  # pragma: no cover - depends on local install
+            raise RuntimeError("openai-whisper is required for fallback transcription") from exc
+
+    model_name = os.environ.get("UAP_WHISPER_MODEL", "small")
+    model = whisper_module.load_model(model_name)
+    result = model.transcribe(str(audio_path), fp16=False)
+    segments = []
+    for segment in result.get("segments", []):
+        segments.append(
+            {
+                "speaker": "UNKNOWN",
+                "start": float(segment["start"]),
+                "end": float(segment["end"]),
+                "text": str(segment.get("text", "")).strip(),
+            }
+        )
+    return {
+        "video_id": metadata.get("video_id") or "",
+        "language": result.get("language", "en"),
+        "model": f"openai-whisper:{model_name}",
         "diarization": "unknown",
         "segments": segments,
     }
