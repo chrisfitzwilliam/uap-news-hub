@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Created and published the public `chrisfitzwilliam/uap-news-hub` repository with Actions-based GitHub Pages deployment and HTTPS.
+- Added six primary-source-linked launch articles, bringing the public baseline to seven evidence-first pieces; verified the live Pages homepage after deployment.
 - Reconciled launch content: replaced public rough-draft naming with a final evidence-standards briefing and moved the uncorroborated tiny-transcript YouTube item to the supervised queue.
 - Made SQLite runtime state local-only and able to bootstrap its publication index from versioned editorial JSON.
 - Added bounded transcript chunking and aggregate analysis for long YouTube recordings.

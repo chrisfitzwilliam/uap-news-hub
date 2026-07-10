@@ -2,6 +2,8 @@
 
 ## Completed launch implementation
 
+- Public source and deployment are live: [repository](https://github.com/chrisfitzwilliam/uap-news-hub), [Pages site](https://chrisfitzwilliam.github.io/uap-news-hub/), and Actions-based Pages with HTTPS enabled.
+- The launch baseline now contains seven public, primary-source-linked articles. They cover NASA’s evidence standard, the FY2024 ODNI report, AARO trends/FAQ/history/imagery, and the introduced UAP Transparency Act.
 - Final public content uses `uap-evidence-standards`; the prior one-source `tiny`-transcript Burlison piece is a queued supervised candidate, not a public article.
 - SQLite is disposable local state. `StateStore.initialize()` rebuilds its publication index from versioned `content/published/` files.
 - Long transcripts are split on segment boundaries, analyzed per chunk, and aggregated source-groundedly before drafting/review.
@@ -14,9 +16,11 @@
 
 ## Next operator actions
 
-1. Run the suite and local build from a clean PowerShell session.
-2. Configure a real `.env`, Git remote/auth, and the GitHub Pages Actions source.
-3. Conduct the seven-day supervised proving run before autonomous publishing.
+1. Configure a real local `.env` for the scheduler, including a production contact endpoint if one is available.
+2. Run a seeded `dry-run`, then complete seven consecutive supervised daily runs; inspect all queued candidates and pipeline alerts.
+3. Re-transcribe and independently corroborate the queued Burlison candidate before any promotion to `content/published/`.
+4. Install the Task Scheduler jobs with the unattended Windows account credential only after the supervised process is accepted.
+5. Add a custom domain later if desired; Pages currently serves successfully from the GitHub URL.
 
 ## Host notes
 

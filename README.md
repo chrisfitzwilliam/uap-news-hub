@@ -18,7 +18,7 @@ Set these in a local `.env` (or persistent environment), then start in `supervis
 UAPNEWSHUB_PIPELINE_MODE=supervised
 UAPNEWSHUB_ENABLE_PUBLISH=0
 UAPNEWSHUB_EMERGENCY_STOP=0
-UAPNEWSHUB_SITE_URL=https://OWNER.github.io/REPOSITORY
+UAPNEWSHUB_SITE_URL=https://chrisfitzwilliam.github.io/uap-news-hub
 ```
 
 - `dry-run`: ingests and evaluates but never writes public or queue content and never commits.
@@ -51,10 +51,15 @@ Jobs use Task Scheduler's `IgnoreNew` overlap policy and the Python stale-lock r
 
 ## GitHub Pages launch
 
-1. Create a public repository, push this branch as `main`, and select **GitHub Actions** as the Pages source.
+The live repository is [chrisfitzwilliam/uap-news-hub](https://github.com/chrisfitzwilliam/uap-news-hub) and the current Pages site is [https://chrisfitzwilliam.github.io/uap-news-hub/](https://chrisfitzwilliam.github.io/uap-news-hub/). It deploys from `main` through GitHub Actions with HTTPS enabled.
+
+1. Keep the repository Actions variable `UAPNEWSHUB_SITE_URL` set to the Pages or final custom-domain URL.
 2. Add a protected `github-pages` environment if desired. The workflow in `.github/workflows/pages.yml` runs validation/tests, builds with `UAPNEWSHUB_SITE_URL`, uploads `site/`, then deploys it.
-3. Set the repository Actions variable `UAPNEWSHUB_SITE_URL` to the final Pages or custom-domain URL.
-4. For a custom domain, configure it in GitHub before DNS, verify the domain, add GitHub's required records, and enable HTTPS.
-5. Keep the pipeline in `supervised` for seven consecutive reviewed daily runs. Only then set `UAPNEWSHUB_PIPELINE_MODE=autonomous` and `UAPNEWSHUB_ENABLE_PUBLISH=1`.
+3. For a custom domain, configure it in GitHub before DNS, verify the domain, add GitHub's required records, and enable HTTPS.
+4. Keep the pipeline in `supervised` for seven consecutive reviewed daily runs. Only then set `UAPNEWSHUB_PIPELINE_MODE=autonomous` and `UAPNEWSHUB_ENABLE_PUBLISH=1`.
+
+## Current baseline
+
+The public site starts with seven source-linked, evidence-first explainers: NASA’s evidence standard, the FY2024 ODNI report, AARO reporting trends and FAQ guidance, AARO’s historical-record review and imagery archive, and the introduced UAP Transparency Act. The single-source Burlison transcript item remains in `content/queue/` until it is re-transcribed with `small` and independently corroborated.
 
 The local publisher commits only changes beneath `content/published/`, `content/queue/`, or `content/rejected/`, then pushes `main`. Any other dirty path blocks publication.
