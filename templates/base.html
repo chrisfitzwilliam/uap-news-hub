@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1118">
-  <title>{{ title }}</title>
+  <title>{{ title }} | Skyledger</title>
   <meta name="description" content="{{ description }}">
   <link rel="canonical" href="{{ canonical_url }}">
   <meta property="og:site_name" content="UFO / UAP News Hub">
@@ -21,13 +21,17 @@
   <a class="skip-link" href="#content">Skip to content</a>
   <main id="content" class="page">
     <nav class="site-nav" aria-label="Primary">
-      <a href="{{ site_root }}/">Home</a>
-      <a href="{{ site_root }}/sections/index.html">Sections</a>
-      <a href="{{ site_root }}/youtube/index.html">YouTube</a>
-      <a href="{{ site_root }}/about.html">About</a>
-      <a href="{{ site_root }}/editorial-standards.html">Standards</a>
-      <a href="{{ site_root }}/status.html">Status</a>
-      <a href="{{ site_root }}/rss.xml">RSS</a>
+      <div class="brand">
+        <a href="{{ site_root }}/" style="color: inherit;">Skyledger</a>
+      </div>
+      <div class="links">
+        <a href="{{ site_root }}/sections/index.html">Sections</a>
+        <a href="{{ site_root }}/youtube/index.html">YouTube</a>
+        <a href="{{ site_root }}/about.html">About</a>
+        <a href="{{ site_root }}/editorial-standards.html">Standards</a>
+        <a href="{{ site_root }}/status.html">Status</a>
+        <a href="{{ site_root }}/rss.xml">RSS</a>
+      </div>
     </nav>
     {% block content %}{% endblock %}
   </main>
