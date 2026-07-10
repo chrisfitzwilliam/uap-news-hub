@@ -66,6 +66,7 @@ DEFAULT_TEMPLATES = {
       <a href="{{ site_root }}/sections/index.html">Sections</a>
       <a href="{{ site_root }}/youtube/index.html">YouTube</a>
       <a href="{{ site_root }}/about.html">About</a>
+      <a href="{{ site_root }}/editorial-standards.html">Standards</a>
       <a href="{{ site_root }}/status.html">Status</a>
       <a href="{{ site_root }}/rss.xml">RSS</a>
     </nav>
