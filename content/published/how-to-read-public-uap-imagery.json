@@ -1,0 +1,12 @@
+{
+  "slug": "how-to-read-public-uap-imagery",
+  "title": "How to Read Public UAP Imagery Without Overreading It",
+  "dek": "AARO’s public imagery archive includes resolved, unresolved, and still-analyzed material; each label has a different evidentiary meaning.",
+  "content_type": "source_digest",
+  "published_at": "2026-07-05T14:00:00Z",
+  "confidence": "high",
+  "claim_labels": ["official_statement", "analysis"],
+  "source_urls": ["https://www.aaro.mil/UAP-Cases/Official-UAP-Imagery/4/"],
+  "body_markdown": "# A public archive is not a single conclusion\n\nAARO’s imagery page groups material with different case statuses, including items resolved as balloons or birds, unresolved reports, and material still undergoing analysis. The page’s own descriptions show why the status label must travel with the clip.\n\n# Resolution and uncertainty can coexist\n\nSome entries describe an assessment with high confidence, such as an object judged consistent with a balloon or migratory birds. Other entries state that the available data are insufficient to determine what produced an observed signature. Those are different conclusions, even when both entries began as UAP reports.\n\n# Limits of video alone\n\nA video can document what a particular sensor displayed at a particular time. It may not reveal the sensor mode, range, calibration, weather, geometry, or all of the context needed for attribution. A striking image can therefore be newsworthy without being decisive.\n\n# A practical checklist\n\nBefore sharing a clip, check the official case label, date, description, source platform, and whether the source says the case is resolved, unresolved, or under analysis. Then describe only what the source supports. That approach preserves curiosity without overstating the evidence.",
+  "review_result": "pass"
+}

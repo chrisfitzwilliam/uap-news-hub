@@ -1,0 +1,12 @@
+{
+  "slug": "aaros-historical-record-report",
+  "title": "AARO’s Historical Record Report: What Its First Volume Reviewed",
+  "dek": "The first volume describes a review of official U.S. government investigations and records; it should be read as an agency assessment of that record.",
+  "content_type": "source_digest",
+  "published_at": "2026-07-07T14:00:00Z",
+  "confidence": "high",
+  "claim_labels": ["official_statement", "analysis"],
+  "source_urls": ["https://www.aaro.mil/Portals/136/PDFs/AARO_Historical_Record_Report_Vol_1_2024.pdf"],
+  "body_markdown": "# Scope of the review\n\nAARO’s Historical Record Report, Volume I, describes its review of U.S. government activity related to UAP from 1945 onward. The report says the office examined classified and unclassified archives, conducted interviews, and worked with intelligence-community and Defense Department officials responsible for oversight of controlled and special-access programs.\n\n# What readers should distinguish\n\nThe report is an official assessment of the records and information AARO reviewed. It is not a complete public release of every underlying record, and its conclusions should not be confused with proof that every allegation in the broader public debate has been independently settled.\n\n# Why the historical record matters\n\nHistorical claims are often repeated without the original document, date, author, or surrounding context. A structured government review provides a starting point for checking what was documented, which investigative bodies existed, and what questions remain open. It also gives researchers a specific work product to challenge with evidence rather than a vague appeal to hidden history.\n\n# Reporting takeaway\n\nA responsible summary names the report, identifies it as AARO’s assessment, and separates its documented findings from claims made by witnesses, advocates, or commentators outside the report.",
+  "review_result": "pass"
+}

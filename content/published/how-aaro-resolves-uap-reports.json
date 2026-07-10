@@ -1,0 +1,12 @@
+{
+  "slug": "how-aaro-resolves-uap-reports",
+  "title": "How AARO’s Public Trend Data Frames UAP Case Resolution",
+  "dek": "AARO’s public trends page separates resolved outcomes from reported descriptions, a distinction that matters when interpreting case counts.",
+  "content_type": "latest_briefing",
+  "published_at": "2026-07-09T14:00:00Z",
+  "confidence": "high",
+  "claim_labels": ["official_statement", "analysis"],
+  "source_urls": ["https://www.aaro.mil/UAP-Cases/UAP-Reporting-Trends/"],
+  "body_markdown": "# Two different kinds of information\n\nAARO’s public UAP Reporting Trends page presents both closed-case resolution outcomes and the descriptions used in incoming reports. Those are not the same thing. A reported shape or light is a description supplied to the reporting system; a closed-case outcome is the office’s later analytic classification.\n\n# What the public table shows\n\nThe current page lists resolved categories such as balloons, satellites, unmanned aircraft systems, aircraft, birds, and sensor artifacts. It also notes that not every report contains morphology data. That caveat is important: a count of reported spheres, lights, or triangles is not a count of confirmed object types.\n\n# Why classification takes evidence\n\nAttribution depends on context—sensor performance, location, weather, timing, flight data, and corroborating observations. A visual label alone rarely supplies enough of that context. Public discussion often collapses description and determination into one category; the trend page is a reminder to keep them separate.\n\n# How to read future updates\n\nChanges in the tables can reflect new reports, additional analysis, or improved data. They are most informative when read as a record of the office’s reported workflow, not as a scorecard for any preferred explanation of UAP.",
+  "review_result": "pass"
+}

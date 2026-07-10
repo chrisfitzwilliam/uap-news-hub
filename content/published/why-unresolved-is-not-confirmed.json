@@ -1,0 +1,12 @@
+{
+  "slug": "why-unresolved-is-not-confirmed",
+  "title": "Why an Unresolved UAP Case Is Not a Confirmed Explanation",
+  "dek": "AARO’s public FAQ says many reports remain unidentified because the available sensors did not collect enough information for positive attribution.",
+  "content_type": "latest_briefing",
+  "published_at": "2026-07-08T14:00:00Z",
+  "confidence": "high",
+  "claim_labels": ["official_statement", "analysis"],
+  "source_urls": ["https://www.aaro.mil/FAQ/"],
+  "body_markdown": "# The meaning of unresolved\n\nAARO’s public FAQ states that many observed phenomena are classified as unidentified simply because sensors did not collect enough information to make a positive attribution. That is a narrow and useful definition: the available record did not support a confident identification.\n\n# What the label does not mean\n\nIt does not identify an object as extraterrestrial, foreign, secret, novel, or even necessarily physical. It also does not prove that every possible conventional explanation has been eliminated. The label describes the limits of the evidence available to the analyst.\n\n# Why data quality changes the discussion\n\nReliable attribution normally benefits from more than a single image or witness account. Timing, calibration, sensor settings, environmental conditions, location, flight tracks, and independent observations can all change what a case means. Missing context can be as consequential as a striking visual.\n\n# Editorial standard\n\nThis site uses unresolved only for the analytic status reported by a source. It does not convert that status into a stronger claim. When later evidence changes the assessment, the newer source should take precedence over an older headline or clip.",
+  "review_result": "pass"
+}

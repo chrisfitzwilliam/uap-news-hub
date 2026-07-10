@@ -1,0 +1,12 @@
+{
+  "slug": "odni-fy2024-uap-report",
+  "title": "What the Fiscal Year 2024 UAP Report Actually Covers",
+  "dek": "The ODNI and Defense Department’s public annual report is a record of reporting and analysis, not a finding about the origin of UAP.",
+  "content_type": "latest_briefing",
+  "published_at": "2026-07-10T14:00:00Z",
+  "confidence": "high",
+  "claim_labels": ["official_statement", "analysis"],
+  "source_urls": ["https://www.odni.gov/index.php/newsroom/reports-publications/reports-publications-2024/4020-uap-2024"],
+  "body_markdown": "# The document in context\n\nThe Office of the Director of National Intelligence and the Department of Defense published the Fiscal Year 2024 Consolidated Annual Report on Unidentified Anomalous Phenomena on November 14, 2024. The public notice says the report was required by the fiscal-year 2022 National Defense Authorization Act, as amended, and that a classified version was also delivered to Congress.\n\n# What the report can establish\n\nAn annual report can establish what the reporting agencies say they received, how they describe their analytic work, and what information they chose to release publicly. It is useful for tracking the government’s own process: reporting volume, case disposition, collection gaps, and changes in public documentation.\n\n# What it cannot establish by itself\n\nThe existence of an annual report does not establish the origin of every case described in it. A case may remain unresolved because the available information is limited, incomplete, classified, or insufficient for a reliable attribution. An unresolved label is therefore a statement about an analytic outcome, not a substitute for a conclusion.\n\n# Why this is a baseline source\n\nFor readers following UAP policy, the annual report is a primary reference point. It should be read alongside individual case material, methodology, and later updates—not as a standalone answer to every public claim about UAP.",
+  "review_result": "pass"
+}

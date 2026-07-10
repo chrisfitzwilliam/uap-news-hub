@@ -1,0 +1,12 @@
+{
+  "slug": "uap-transparency-act-introduced",
+  "title": "The UAP Transparency Act Was Introduced—Not Enacted",
+  "dek": "H.R. 8424 proposed public release requirements for UAP-related records, but its congressional status matters as much as its text.",
+  "content_type": "breaking_brief",
+  "published_at": "2026-07-06T14:00:00Z",
+  "confidence": "high",
+  "claim_labels": ["official_statement", "analysis"],
+  "source_urls": ["https://www.congress.gov/bill/118th-congress/house-bill/8424/text"],
+  "body_markdown": "# The proposal\n\nH.R. 8424, the UAP Transparency Act, was introduced in the House on May 16, 2024. Its text proposed directing federal departments and agencies holding UAP-related documents, reports, or records to declassify and make them publicly available, subject to the bill’s terms. It also proposed progress reporting to congressional committees.\n\n# The status is part of the story\n\nCongress.gov identifies the measure as introduced and referred to the House Committee on Oversight and Accountability. An introduced bill is not enacted law. Its text can show what sponsors proposed; it cannot be cited as a requirement that agencies must already be following.\n\n# Why legislative precision matters\n\nUAP coverage regularly mixes together bills, amendments, enacted provisions, agency initiatives, and public statements. Those categories carry different legal force. Reporting should identify the bill number, Congress, date, and latest action before describing a proposal as policy.\n\n# What to watch\n\nThe next meaningful developments would be committee action, a vote, incorporation into other legislation, or a newly introduced measure. Until then, the most accurate description is that this was a proposal placed before Congress.",
+  "review_result": "pass"
+}
