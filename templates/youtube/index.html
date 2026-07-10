@@ -1,52 +1,166 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="hero">
-  <p class="eyebrow">Monitored video sources</p>
-  <h1>YouTube Channel Analysis</h1>
-  <p class="lede">Synopsis and analysis staging for the ten monitored UFO/UAP YouTube channels.</p>
-</header>
-<section class="panel">
-  <div class="metric-row">
-    <div><strong>{{ dashboard.channel_count }}</strong><span>channels</span></div>
-    <div><strong>{{ dashboard.packet_count }}</strong><span>staged episodes</span></div>
-    <div><strong>{{ dashboard.download_count }}</strong><span>downloads</span></div>
-    <div><strong>{{ dashboard.transcript_count }}</strong><span>transcripts</span></div>
-  </div>
-</section>
-<section class="panel">
-  <div class="panel-heading">
-    <h2>Channels</h2>
-    <p>Local status by monitored source.</p>
-  </div>
-  <div class="channel-grid">
-  {% for channel in dashboard.channels %}
-    <article class="channel-card">
-      <div class="channel-card__head">
-        <div>
-          <p class="kicker">{{ channel.category_label }}</p>
-          <h3><a href="{{ channel.url }}">{{ channel.name }}</a></h3>
+<div style="position:relative; width:100%;">
+  <!-- header band -->
+  <header style="position:relative; overflow:hidden; padding:140px clamp(20px,6vw,80px) 40px;">
+    <canvas id="sky-yt-canvas" style="position:absolute; inset:0; width:100%; height:100%; display:block; opacity:.7;"></canvas>
+    <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(7,9,15,.4), #07090f 90%); pointer-events:none;"></div>
+    <div style="position:relative; z-index:2; max-width:1180px; margin:0 auto;">
+      <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.16em; color:#00e5ff; text-transform:uppercase; margin:0 0 16px;">// Monitored video sources</p>
+      <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(2.2rem,5vw,3.8rem); line-height:1.02; letter-spacing:-.02em; margin:0 0 16px; max-width:20ch;">Channel intelligence</h1>
+      <p style="font-size:clamp(1rem,1.5vw,1.25rem); color:#b6c2d4; max-width:60ch; margin:0;">Ten monitored UFO/UAP channels, ranked by editorial priority. Synopsis and analysis staging for each source, graded the same way as every briefing.</p>
+
+      <!-- metrics -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:1px; margin-top:40px; background:rgba(142,163,190,.14); border:1px solid rgba(142,163,190,.14); border-radius:16px; overflow:hidden; max-width:760px;">
+        <div style="padding:20px 22px; background:rgba(11,17,24,.6);"><div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.9rem; line-height:1;"><span data-count="{{ dashboard.channel_count }}">0</span></div><div style="font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em; color:#8e9bb0; text-transform:uppercase; margin-top:7px;">Channels</div></div>
+        <div style="padding:20px 22px; background:rgba(11,17,24,.6);"><div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.9rem; line-height:1;"><span data-count="{{ dashboard.packet_count }}">0</span></div><div style="font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em; color:#8e9bb0; text-transform:uppercase; margin-top:7px;">Staged episodes</div></div>
+        <div style="padding:20px 22px; background:rgba(11,17,24,.6);"><div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.9rem; line-height:1;"><span data-count="{{ dashboard.download_count }}">0</span></div><div style="font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em; color:#8e9bb0; text-transform:uppercase; margin-top:7px;">Downloads</div></div>
+        <div style="padding:20px 22px; background:rgba(11,17,24,.6);"><div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.9rem; line-height:1; color:#00e5ff;"><span data-count="{{ dashboard.transcript_count }}">0</span></div><div style="font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em; color:#8e9bb0; text-transform:uppercase; margin-top:7px;">Transcripts</div></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- controls + leaderboard -->
+  <section style="position:relative; padding:8px clamp(20px,6vw,80px) 100px;">
+    <div style="max-width:1180px; margin:0 auto;">
+
+      <!-- control bar -->
+      <div style="position:sticky; top:88px; z-index:50; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; padding:14px; margin-bottom:22px; border-radius:16px; background:rgba(11,17,24,.86); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); border:1px solid rgba(142,163,190,.16);">
+        <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:220px; padding:0 14px; height:44px; border-radius:11px; background:rgba(255,255,255,.03); border:1px solid rgba(142,163,190,.16);">
+          <span style="color:#6c7a8f; font-family:'JetBrains Mono',monospace; font-size:.9rem;">⌕</span>
+          <input class="yt-search-input" placeholder="Search channels…" style="flex:1; background:transparent; border:none; outline:none; color:#f4f6fa; font-size:.95rem;">
         </div>
-        <span class="priority-badge">#{{ channel.priority }}</span>
+        <div class="yt-filter-chips" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <button class="yt-filter-btn active" data-filter="All" style="padding:7px 13px; border-radius:999px; border:1px solid rgba(0,229,255,.4); background:rgba(0,229,255,.12); color:#00e5ff; font-size:.82rem; font-weight:500; cursor:pointer; transition:all .2s ease; font-family:'Inter',sans-serif;">All</button>
+            <button class="yt-filter-btn" data-filter="Investigative" style="padding:7px 13px; border-radius:999px; border:1px solid rgba(142,163,190,.18); background:transparent; color:#c3cdda; font-size:.82rem; font-weight:500; cursor:pointer; transition:all .2s ease; font-family:'Inter',sans-serif;">Investigative</button>
+            <button class="yt-filter-btn" data-filter="News" style="padding:7px 13px; border-radius:999px; border:1px solid rgba(142,163,190,.18); background:transparent; color:#c3cdda; font-size:.82rem; font-weight:500; cursor:pointer; transition:all .2s ease; font-family:'Inter',sans-serif;">News</button>
+            <button class="yt-filter-btn" data-filter="Skeptic" style="padding:7px 13px; border-radius:999px; border:1px solid rgba(142,163,190,.18); background:transparent; color:#c3cdda; font-size:.82rem; font-weight:500; cursor:pointer; transition:all .2s ease; font-family:'Inter',sans-serif;">Skeptic</button>
+            <button class="yt-filter-btn" data-filter="Official" style="padding:7px 13px; border-radius:999px; border:1px solid rgba(142,163,190,.18); background:transparent; color:#c3cdda; font-size:.82rem; font-weight:500; cursor:pointer; transition:all .2s ease; font-family:'Inter',sans-serif;">Official</button>
+            <button class="yt-filter-btn" data-filter="Discussion" style="padding:7px 13px; border-radius:999px; border:1px solid rgba(142,163,190,.18); background:transparent; color:#c3cdda; font-size:.82rem; font-weight:500; cursor:pointer; transition:all .2s ease; font-family:'Inter',sans-serif;">Discussion</button>
+            <button class="yt-filter-btn" data-filter="Longform" style="padding:7px 13px; border-radius:999px; border:1px solid rgba(142,163,190,.18); background:transparent; color:#c3cdda; font-size:.82rem; font-weight:500; cursor:pointer; transition:all .2s ease; font-family:'Inter',sans-serif;">Longform</button>
+        </div>
+        <div class="yt-sort-chips" style="display:flex; align-items:center; gap:8px;">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em; color:#6c7a8f; text-transform:uppercase;">Sort</span>
+          <button class="yt-sort-btn active" data-sort="Priority" style="padding:7px 12px; border-radius:9px; border:1px solid rgba(0,229,255,.4); background:rgba(0,229,255,.10); color:#00e5ff; font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; transition:all .2s ease;">Priority</button>
+          <button class="yt-sort-btn" data-sort="A–Z" style="padding:7px 12px; border-radius:9px; border:1px solid rgba(142,163,190,.18); background:transparent; color:#9fb0c6; font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; transition:all .2s ease;">A–Z</button>
+          <button class="yt-sort-btn" data-sort="Activity" style="padding:7px 12px; border-radius:9px; border:1px solid rgba(142,163,190,.18); background:transparent; color:#9fb0c6; font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; transition:all .2s ease;">Activity</button>
+        </div>
       </div>
-      <p>{{ channel.reason }}</p>
-      <div class="story-meta">
-        <span class="meta">{{ channel.download_label }}</span>
-        <span class="meta">{{ channel.transcript_label }}</span>
+
+      <p class="yt-result-label" style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.08em; color:#6c7a8f; margin:0 0 14px;">Showing {{ dashboard.channels|length }} of {{ dashboard.channel_count }} monitored channels · sorted by priority</p>
+
+      <!-- leaderboard -->
+      <div class="yt-channel-list" style="display:flex; flex-direction:column; gap:10px;">
+        {% for channel in dashboard.channels %}
+        {% set cat = channel.category_label %}
+        {% if cat == 'Investigative' %}{% set tc_c = '#00e5ff' %}{% set tc_bg = 'rgba(0,229,255,.12)' %}{% set tc_bd = 'rgba(0,229,255,.3)' %}
+        {% elif cat == 'News' %}{% set tc_c = '#8fb3ff' %}{% set tc_bg = 'rgba(143,179,255,.14)' %}{% set tc_bd = 'rgba(143,179,255,.32)' %}
+        {% elif cat == 'Skeptic' %}{% set tc_c = '#f5b937' %}{% set tc_bg = 'rgba(245,185,55,.14)' %}{% set tc_bd = 'rgba(245,185,55,.32)' %}
+        {% elif cat == 'Official' %}{% set tc_c = '#7fe3c0' %}{% set tc_bg = 'rgba(41,176,131,.16)' %}{% set tc_bd = 'rgba(41,176,131,.34)' %}
+        {% elif cat == 'Discussion' %}{% set tc_c = '#c1a3ff' %}{% set tc_bg = 'rgba(181,140,255,.14)' %}{% set tc_bd = 'rgba(181,140,255,.32)' %}
+        {% elif cat == 'Longform' %}{% set tc_c = '#9fb0c6' %}{% set tc_bg = 'rgba(142,163,190,.14)' %}{% set tc_bd = 'rgba(142,163,190,.3)' %}
+        {% else %}{% set tc_c = '#00e5ff' %}{% set tc_bg = 'rgba(0,229,255,.12)' %}{% set tc_bd = 'rgba(0,229,255,.3)' %}{% endif %}
+        
+        <div class="yt-channel-row" data-reveal data-name="{{ channel.name }}" data-category="{{ cat }}" data-assessment="{{ channel.reason }}" data-priority="{{ channel.priority }}" data-activity="{{ channel.activity | default(50) }}" style="border-radius:16px; background:rgba(17,21,28,.6); border:1px solid rgba(142,163,190,.14); overflow:hidden; transition:border-color .3s ease, background .3s ease;">
+          <!-- row header (clickable) -->
+          <div class="yt-channel-header" role="button" tabindex="0" style="display:flex; align-items:center; gap:clamp(12px,2vw,24px); padding:clamp(16px,2vw,22px) clamp(16px,2.4vw,26px); cursor:pointer;">
+            <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.3rem,2.4vw,1.9rem); color:{% if loop.index <= 3 %}#00e5ff{% else %}#4a5769{% endif %}; min-width:34px; text-align:center; line-height:1;">{{ "%02d" % loop.index }}</div>
+
+            <div style="position:relative; width:46px; height:46px; flex:0 0 auto; border-radius:50%; overflow:hidden; border:1px solid rgba(142,163,190,.24);">
+              <img src="/assets/img/channels/{{ channel.id | default('default') }}.jpg" alt="{{ channel.name }}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='/assets/img/channels/default.jpg'">
+            </div>
+
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:5px;">
+                <h3 style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:clamp(1.02rem,1.6vw,1.28rem); margin:0; color:#f4f6fa;">{{ channel.name }}</h3>
+                <span style="display:inline-flex; align-items:center; padding:3px 10px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:.64rem; letter-spacing:.08em; text-transform:uppercase; color:{{ tc_c }}; background:{{ tc_bg }}; border:1px solid {{ tc_bd }}">{{ cat }}</span>
+              </div>
+              <p style="margin:0; color:#8e9bb0; font-size:.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ channel.reason }}</p>
+            </div>
+
+            <!-- activity meter (hidden on small via wrap) -->
+            <div style="display:flex; flex-direction:column; gap:6px; width:120px; flex:0 0 auto;">
+              <div style="display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.08em; color:#6c7a8f; text-transform:uppercase;"><span>Activity</span><span style="color:#9fb0c6;">{{ channel.activity | default(50) }}</span></div>
+              <div style="height:5px; border-radius:999px; background:rgba(142,163,190,.16); overflow:hidden;"><div style="height:100%; width:{{ channel.activity | default(50) }}%; border-radius:999px; background:linear-gradient(90deg,{{ tc_c }},rgba(0,229,255,.5)); transition:width .5s ease;"></div></div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:14px; flex:0 0 auto;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#8e9bb0; white-space:nowrap;">{{ channel.transcript_label }}</span>
+              <span class="yt-chevron" style="width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; border:1px solid rgba(142,163,190,.24); color:#9fb0c6; transition:transform .3s ease; transform:rotate(0deg);">⌄</span>
+            </div>
+          </div>
+
+          <!-- expandable detail -->
+          <div class="yt-channel-detail" style="overflow:hidden; max-height:0; opacity:0; transition:max-height .45s cubic-bezier(.2,.7,.2,1), opacity .35s ease;">
+            <div style="padding:0 clamp(16px,2.4vw,26px) clamp(20px,2.4vw,26px); border-top:1px solid rgba(142,163,190,.12);">
+              <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:22px; padding-top:20px;">
+                <!-- synopsis -->
+                <div>
+                  <p style="font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em; color:#00e5ff; text-transform:uppercase; margin:0 0 12px;">Analysis synopsis</p>
+                  <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:10px;">
+                    {% if channel.synopsis %}
+                      {% for pt in channel.synopsis %}
+                      <li style="display:flex; gap:10px; color:#c3cdda; font-size:.92rem;"><span style="color:#00e5ff; flex:0 0 auto;">▸</span><span>{{ pt }}</span></li>
+                      {% endfor %}
+                    {% else %}
+                      <li style="display:flex; gap:10px; color:#c3cdda; font-size:.92rem;"><span style="color:#00e5ff; flex:0 0 auto;">▸</span><span>No synopsis provided.</span></li>
+                    {% endif %}
+                  </ul>
+                </div>
+                <!-- latest staged -->
+                <div>
+                  <p style="font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em; color:#00e5ff; text-transform:uppercase; margin:0 0 12px;">Latest staged capture</p>
+                  {% if channel.episodes and channel.episodes|length > 0 %}
+                    {% set latest = channel.episodes[0] %}
+                    {% set ls = latest.status_label %}
+                    {% if 'held' in ls.lower() or 'needs' in ls.lower() %}
+                      {% set ls_bg = 'rgba(233,107,107,.15)' %}
+                      {% set ls_bd = 'rgba(233,107,107,.30)' %}
+                      {% set ls_tx = '#ffd0d0' %}
+                    {% elif 'awaiting' in ls.lower() or 'queued' in ls.lower() %}
+                      {% set ls_bg = 'rgba(245,185,55,.14)' %}
+                      {% set ls_bd = 'rgba(245,185,55,.30)' %}
+                      {% set ls_tx = '#ffe3a1' %}
+                    {% else %}
+                      {% set ls_bg = 'rgba(41,176,131,.16)' %}
+                      {% set ls_bd = 'rgba(41,176,131,.32)' %}
+                      {% set ls_tx = '#bbf3df' %}
+                    {% endif %}
+                  <div style="padding:14px 16px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid rgba(142,163,190,.14);">
+                    <p style="margin:0 0 8px; font-size:.94rem; color:#f4f6fa;">{{ latest.title }}</p>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                      <span style="display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px; font-size:.72rem; font-weight:600; background:{{ ls_bg }}; border:1px solid {{ ls_bd }}; color:{{ ls_tx }};">{{ latest.status_label }}</span>
+                      <span style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#8e9bb0;">{{ latest.claims | default(0) }} claim(s) extracted</span>
+                    </div>
+                  </div>
+                  {% else %}
+                  <div style="padding:14px 16px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid rgba(142,163,190,.14);">
+                    <p class="empty-state" style="margin:0; font-size:.94rem; color:#f4f6fa;">No local episodes staged yet.</p>
+                  </div>
+                  {% endif %}
+                  <p style="margin:12px 0 0; font-size:.84rem; color:#8e9bb0;"><span style="color:#f5b937;">Evidence gap · </span>{{ channel.gap | default('Requires corroboration from primary filings.') }}</p>
+                </div>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-top:20px; padding-top:16px; border-top:1px solid rgba(142,163,190,.10);">
+                <span style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#8e9bb0;">{{ channel.download_label }}</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#8e9bb0;">{{ channel.packet_label | default(channel.episodes|length ~ ' staged') }}</span>
+                <a href="{{ channel.url }}" target="_blank" style="margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:.74rem; letter-spacing:.06em;">Open channel ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
       </div>
-      {% if channel.episodes %}
-      <ul class="episode-list">
-      {% for episode in channel.episodes %}
-        <li>
-          <a href="{{ episode.url }}">{{ episode.title }}</a>
-          <span>{{ episode.status_label }}</span>
-        </li>
-      {% endfor %}
-      </ul>
-      {% else %}
-        <p class="empty-state">No local episodes staged yet.</p>
-      {% endif %}
-    </article>
-  {% endfor %}
-  </div>
-</section>
+
+      <div class="yt-empty-state" style="display:none; padding:40px; text-align:center; border:1px dashed rgba(142,163,190,.2); border-radius:16px; color:#8e9bb0;">No channels match your filter.</div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid rgba(142,163,190,.12); padding:44px clamp(20px,6vw,80px);">
+    <div style="max-width:1180px; margin:0 auto; display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between;">
+      <span style="font-family:'Space Grotesk',sans-serif; font-weight:700;">Skyledger</span>
+      <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#6c7a8f; margin:0; max-width:60ch;">Channel popularity does not imply credibility. Every claim is graded on the strength of its own record.</p>
+    </div>
+  </footer>
+</div>
 {% endblock %}

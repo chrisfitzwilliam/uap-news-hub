@@ -1,52 +1,334 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="briefing">
-  <h1>The Briefing</h1>
-  <p class="lede">Skyledger provides evidence-first intelligence, tracking validated UAP claims, source material, and analytical readouts.</p>
-</header>
+<style>
+  @keyframes sky-rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes sky-scrollcue { 0% { transform: translateY(0); opacity: .8; } 50% { transform: translateY(8px); opacity: .3; } 100% { transform: translateY(0); opacity: .8; } }
+  @keyframes sky-sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes sky-flow { 0% { left: -30%; } 100% { left: 130%; } }
+  @keyframes sky-flowv { 0% { top: -30%; } 100% { top: 130%; } }
+  @keyframes sky-pipepulse { 0%,100% { box-shadow: 0 0 0 rgba(0,229,255,0); border-color: rgba(0,229,255,.3); } 50% { box-shadow: 0 0 14px rgba(0,229,255,.5); border-color: rgba(0,229,255,.6); } }
+  @media (max-width: 780px) {
+    .sky-lead { grid-template-columns: 1fr !important; }
+    .sky-lead .sky-lead-media { min-height: 200px !important; }
+  }
+  @media (max-width: 1024px) {
+    .sky-pipe { flex-direction: column !important; align-items: stretch !important; }
+    .sky-pipe .sky-pipe-conn { width: 2px !important; height: 22px !important; align-self: center !important; }
+    .sky-pipe .sky-pipe-conn > span { animation-name: sky-flowv !important; width: 4px !important; height: 30% !important; left: -1px !important; }
+  }
+</style>
 
-<div class="evidence-grid">
-  <section class="panel">
-    <div class="panel-heading">
-      <h2>Latest Intelligence</h2>
-      <p>The freshest validated pieces.</p>
-    </div>
-    <div class="story-list">
-    {% if articles %}
-    {% for article in articles %}
-      <article class="story-card">
-        <p class="kicker">{{ article.section_title }}</p>
-        <h3><a href="{{ article.article_url }}">{{ article.title }}</a></h3>
-        <div class="story-meta">
-          <span class="confidence-badge {{ article.confidence_class }}">{{ article.confidence_label }}</span>
-          <span class="meta">{{ article.published_at }}</span>
+<div style="position:relative; width:100%;">
+
+  <!-- ===== HERO ===== -->
+  <header style="position:relative; min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:120px clamp(20px,6vw,80px) 60px; overflow:hidden;">
+    <canvas id="sky-hero-canvas" style="position:absolute; inset:0; width:100%; height:100%; display:block;"></canvas>
+    <div style="position:absolute; inset:0; background:radial-gradient(120% 90% at 70% 10%, rgba(0,229,255,.10), transparent 55%), linear-gradient(180deg, rgba(7,9,15,0) 40%, rgba(7,9,15,.75) 82%, #07090f 100%); pointer-events:none;"></div>
+
+    <div style="position:relative; z-index:2; max-width:1120px; margin:0 auto; width:100%;">
+      <div data-reveal style="display:inline-flex; align-items:center; gap:12px; padding:8px 14px; border:1px solid rgba(0,229,255,.22); border-radius:999px; background:rgba(0,229,255,.05); margin-bottom:28px;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#00e5ff; box-shadow:0 0 10px rgba(0,229,255,.9);"></span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.16em; color:#9fb0c6; text-transform:uppercase;">Skyledger Observatory · Evidence-First UAP Intelligence</span>
+      </div>
+
+      <h1 data-reveal style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(2.8rem,7.5vw,6.2rem); line-height:.98; letter-spacing:-.02em; margin:0 0 24px; max-width:16ch;">
+        Signal, separated<br>from the <span style="background:linear-gradient(120deg,#00e5ff,#8fb3ff); -webkit-background-clip:text; background-clip:text; color:transparent;">noise.</span>
+      </h1>
+
+      <p data-reveal style="font-size:clamp(1.05rem,1.6vw,1.35rem); color:#b6c2d4; max-width:62ch; margin:0 0 38px;">
+        Evidence-first reporting on unidentified anomalous phenomena — tracking validated claims, primary source material, and analytical readouts. We report what the record supports, and clearly label what it doesn't.
+      </p>
+
+      <div data-reveal style="display:flex; flex-wrap:wrap; gap:14px; align-items:center;">
+        <a href="#latest" style="display:inline-flex; align-items:center; gap:9px; padding:14px 24px; border-radius:999px; background:#00e5ff; color:#05070c; font-weight:600; font-size:.98rem; box-shadow:0 10px 34px rgba(0,229,255,.28);">Read the briefing <span style="font-family:'JetBrains Mono',monospace;">↓</span></a>
+        <a href="/youtube/" style="display:inline-flex; align-items:center; gap:9px; padding:14px 24px; border-radius:999px; background:rgba(255,255,255,.04); border:1px solid rgba(142,163,190,.22); color:#f4f6fa; font-weight:500; font-size:.98rem;">Channel intelligence</a>
+      </div>
+
+      <!-- stat strip -->
+      <div data-reveal style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; margin-top:64px; background:rgba(142,163,190,.14); border:1px solid rgba(142,163,190,.14); border-radius:16px; overflow:hidden;">
+        <div style="padding:22px 24px; background:rgba(11,17,24,.55);">
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:2rem; line-height:1;"><span data-count="7">0</span></div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.1em; color:#8e9bb0; text-transform:uppercase; margin-top:8px;">Validated briefings</div>
         </div>
-      </article>
-    {% endfor %}
-    {% else %}
-      <p class="empty-state">No validated items are available yet.</p>
-    {% endif %}
+        <div style="padding:22px 24px; background:rgba(11,17,24,.55);">
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:2rem; line-height:1;"><span data-count="10">0</span></div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.1em; color:#8e9bb0; text-transform:uppercase; margin-top:8px;">Monitored channels</div>
+        </div>
+        <div style="padding:22px 24px; background:rgba(11,17,24,.55);">
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:2rem; line-height:1;"><span data-count="4">0</span></div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.1em; color:#8e9bb0; text-transform:uppercase; margin-top:8px;">Reporting lanes</div>
+        </div>
+        <div style="padding:22px 24px; background:rgba(11,17,24,.55);">
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:2rem; line-height:1; color:#00e5ff;">100<span style="font-size:1.1rem;">%</span></div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.1em; color:#8e9bb0; text-transform:uppercase; margin-top:8px;">Source-linked</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:absolute; bottom:26px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; z-index:2;">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.22em; color:#6c7a8f; text-transform:uppercase;">Scroll</span>
+      <span style="width:1px; height:34px; background:linear-gradient(#00e5ff, transparent); animation:sky-scrollcue 1.8s ease-in-out infinite;"></span>
+    </div>
+  </header>
+
+  <!-- ===== EVIDENCE-FIRST BAND ===== -->
+  <section style="position:relative; padding:clamp(60px,9vw,120px) clamp(20px,6vw,80px); border-top:1px solid rgba(142,163,190,.10);">
+    <div style="max-width:1120px; margin:0 auto;">
+      <div data-reveal style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:48px;">
+        <div>
+          <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.16em; color:#00e5ff; text-transform:uppercase; margin:0 0 14px;">// The method</p>
+          <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.8rem,3.4vw,2.8rem); line-height:1.05; letter-spacing:-.01em; margin:0; max-width:20ch;">Every claim carries its evidence.</h2>
+        </div>
+        <p style="color:#8e9bb0; max-width:38ch; margin:0; font-size:1rem;">Observation, interpretation, and speculation are kept separate. A report can be newsworthy without proving a cause.</p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-bottom:44px;">
+        <div data-reveal style="padding:26px; border-radius:18px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14);">
+          <div style="font-family:'JetBrains Mono',monospace; color:#00e5ff; font-size:.8rem; margin-bottom:16px;">01</div>
+          <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.15rem; margin:0 0 8px;">Source-linked</h3>
+          <p style="color:#8e9bb0; margin:0; font-size:.94rem;">Every briefing links to the primary NASA, AARO, ODNI, or congressional document behind it.</p>
+        </div>
+        <div data-reveal style="padding:26px; border-radius:18px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14);">
+          <div style="font-family:'JetBrains Mono',monospace; color:#00e5ff; font-size:.8rem; margin-bottom:16px;">02</div>
+          <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.15rem; margin:0 0 8px;">Confidence-graded</h3>
+          <p style="color:#8e9bb0; margin:0; font-size:.94rem;">Each item is tagged high, medium, or low based on the strength of the underlying record.</p>
+        </div>
+        <div data-reveal style="padding:26px; border-radius:18px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14);">
+          <div style="font-family:'JetBrains Mono',monospace; color:#00e5ff; font-size:.8rem; margin-bottom:16px;">03</div>
+          <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.15rem; margin:0 0 8px;">Unresolved ≠ confirmed</h3>
+          <p style="color:#8e9bb0; margin:0; font-size:.94rem;">An unresolved case stays labeled unresolved until stronger evidence changes the assessment.</p>
+        </div>
+      </div>
+
+      <!-- confidence ladder diagram -->
+      <div data-reveal style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.14em; color:#8e9bb0; text-transform:uppercase;">The confidence ladder</span>
+        <span style="flex:1; height:1px; background:rgba(142,163,190,.14);"></span>
+      </div>
+      <div data-reveal style="display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px;">
+        <div style="display:flex; gap:16px; align-items:flex-end; padding:20px 22px; border-radius:16px; background:rgba(41,176,131,.06); border:1px solid rgba(41,176,131,.22);">
+          <div style="width:10px; height:66px; border-radius:6px; background:linear-gradient(#29b083,#1c7a5b); box-shadow:0 0 14px rgba(41,176,131,.4); flex:0 0 auto;"></div>
+          <div><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; color:#bbf3df; font-size:1.05rem;">High</span><p style="margin:5px 0 0; color:#8e9bb0; font-size:.85rem;">Primary documents, corroborated or officially stated.</p></div>
+        </div>
+        <div style="display:flex; gap:16px; align-items:flex-end; padding:20px 22px; border-radius:16px; background:rgba(245,185,55,.05); border:1px solid rgba(245,185,55,.2);">
+          <div style="width:10px; height:44px; border-radius:6px; background:linear-gradient(#f5b937,#b3862a); box-shadow:0 0 14px rgba(245,185,55,.35); flex:0 0 auto;"></div>
+          <div><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; color:#ffe3a1; font-size:1.05rem;">Medium</span><p style="margin:5px 0 0; color:#8e9bb0; font-size:.85rem;">Analytic reading of a source; some open questions.</p></div>
+        </div>
+        <div style="display:flex; gap:16px; align-items:flex-end; padding:20px 22px; border-radius:16px; background:rgba(233,107,107,.05); border:1px solid rgba(233,107,107,.2);">
+          <div style="width:10px; height:26px; border-radius:6px; background:linear-gradient(#e96b6b,#a84545); box-shadow:0 0 14px rgba(233,107,107,.35); flex:0 0 auto;"></div>
+          <div><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; color:#ffd0d0; font-size:1.05rem;">Low</span><p style="margin:5px 0 0; color:#8e9bb0; font-size:.85rem;">Single-source or transcript-derived; held for review.</p></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="panel">
-    <div class="panel-heading">
-      <h2>Evidence Library</h2>
-      <p>Browse by domain and category.</p>
-    </div>
-    <div class="card-grid">
-    {% if sections %}
-    {% for section in sections %}
-      <article class="card">
-        <h3><a href="{{ section.url }}">{{ section.title }}</a></h3>
-        <p>{{ section.description }}</p>
-        <p class="meta">[{{ section.count }} DATA POINTS]</p>
-      </article>
-    {% endfor %}
-    {% else %}
-      <p class="empty-state">No library items published yet.</p>
-    {% endif %}
+  <!-- ===== PIPELINE DIAGRAM ===== -->
+  <section style="position:relative; padding:clamp(20px,4vw,50px) clamp(20px,6vw,80px) clamp(30px,5vw,60px);">
+    <div style="max-width:1120px; margin:0 auto;">
+      <div data-reveal style="margin-bottom:34px;">
+        <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.16em; color:#00e5ff; text-transform:uppercase; margin:0 0 12px;">// The pipeline</p>
+        <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.6rem,3vw,2.4rem); line-height:1.05; letter-spacing:-.01em; margin:0; max-width:24ch;">From raw source to verified record</h2>
+      </div>
+      <div class="sky-pipe" data-reveal style="display:flex; align-items:stretch; gap:0;">
+        <!-- Node 1 -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:10px; padding:20px 18px; border-radius:16px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:30px; height:30px; flex:0 0 auto; border-radius:9px; display:inline-flex; align-items:center; justify-content:center; background:rgba(0,229,255,.10); border:1px solid rgba(0,229,255,.3); color:#00e5ff; font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:600; animation:sky-pipepulse 3s ease-in-out infinite;">1</span>
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1rem;">Ingest</span>
+          </div>
+          <p style="margin:0; color:#8e9bb0; font-size:.84rem; line-height:1.5;">RSS news feeds and 10 monitored YouTube channels.</p>
+        </div>
+        
+        <!-- Conn 1 -->
+        <div class="sky-pipe-conn" style="position:relative; flex:0 0 34px; align-self:center; height:2px; background:rgba(0,229,255,.22); overflow:hidden;"><span style="position:absolute; top:-1px; width:26%; height:4px; background:linear-gradient(90deg,transparent,#00e5ff,transparent); animation:sky-flow 2.4s linear infinite;"></span></div>
+
+        <!-- Node 2 -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:10px; padding:20px 18px; border-radius:16px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:30px; height:30px; flex:0 0 auto; border-radius:9px; display:inline-flex; align-items:center; justify-content:center; background:rgba(0,229,255,.10); border:1px solid rgba(0,229,255,.3); color:#00e5ff; font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:600; animation:sky-pipepulse 3s ease-in-out infinite;">2</span>
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1rem;">Triage</span>
+          </div>
+          <p style="margin:0; color:#8e9bb0; font-size:.84rem; line-height:1.5;">Source scoring filters noise from candidate material.</p>
+        </div>
+
+        <!-- Conn 2 -->
+        <div class="sky-pipe-conn" style="position:relative; flex:0 0 34px; align-self:center; height:2px; background:rgba(0,229,255,.22); overflow:hidden;"><span style="position:absolute; top:-1px; width:26%; height:4px; background:linear-gradient(90deg,transparent,#00e5ff,transparent); animation:sky-flow 2.4s linear infinite;"></span></div>
+
+        <!-- Node 3 -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:10px; padding:20px 18px; border-radius:16px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:30px; height:30px; flex:0 0 auto; border-radius:9px; display:inline-flex; align-items:center; justify-content:center; background:rgba(0,229,255,.10); border:1px solid rgba(0,229,255,.3); color:#00e5ff; font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:600; animation:sky-pipepulse 3s ease-in-out infinite;">3</span>
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1rem;">Transcribe</span>
+          </div>
+          <p style="margin:0; color:#8e9bb0; font-size:.84rem; line-height:1.5;">Local Whisper transcription of downloaded audio.</p>
+        </div>
+
+        <!-- Conn 3 -->
+        <div class="sky-pipe-conn" style="position:relative; flex:0 0 34px; align-self:center; height:2px; background:rgba(0,229,255,.22); overflow:hidden;"><span style="position:absolute; top:-1px; width:26%; height:4px; background:linear-gradient(90deg,transparent,#00e5ff,transparent); animation:sky-flow 2.4s linear infinite;"></span></div>
+
+        <!-- Node 4 -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:10px; padding:20px 18px; border-radius:16px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:30px; height:30px; flex:0 0 auto; border-radius:9px; display:inline-flex; align-items:center; justify-content:center; background:rgba(0,229,255,.10); border:1px solid rgba(0,229,255,.3); color:#00e5ff; font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:600; animation:sky-pipepulse 3s ease-in-out infinite;">4</span>
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1rem;">Analyze</span>
+          </div>
+          <p style="margin:0; color:#8e9bb0; font-size:.84rem; line-height:1.5;">AGY extracts timestamped, source-grounded claims.</p>
+        </div>
+
+        <!-- Conn 4 -->
+        <div class="sky-pipe-conn" style="position:relative; flex:0 0 34px; align-self:center; height:2px; background:rgba(0,229,255,.22); overflow:hidden;"><span style="position:absolute; top:-1px; width:26%; height:4px; background:linear-gradient(90deg,transparent,#00e5ff,transparent); animation:sky-flow 2.4s linear infinite;"></span></div>
+
+        <!-- Node 5 -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:10px; padding:20px 18px; border-radius:16px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:30px; height:30px; flex:0 0 auto; border-radius:9px; display:inline-flex; align-items:center; justify-content:center; background:rgba(0,229,255,.10); border:1px solid rgba(0,229,255,.3); color:#00e5ff; font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:600; animation:sky-pipepulse 3s ease-in-out infinite;">5</span>
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1rem;">Review</span>
+          </div>
+          <p style="margin:0; color:#8e9bb0; font-size:.84rem; line-height:1.5;">Factual gate; fails closed on any schema or budget error.</p>
+        </div>
+
+        <!-- Conn 5 -->
+        <div class="sky-pipe-conn" style="position:relative; flex:0 0 34px; align-self:center; height:2px; background:rgba(0,229,255,.22); overflow:hidden;"><span style="position:absolute; top:-1px; width:26%; height:4px; background:linear-gradient(90deg,transparent,#00e5ff,transparent); animation:sky-flow 2.4s linear infinite;"></span></div>
+
+        <!-- Node 6 -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:10px; padding:20px 18px; border-radius:16px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:30px; height:30px; flex:0 0 auto; border-radius:9px; display:inline-flex; align-items:center; justify-content:center; background:rgba(0,229,255,.10); border:1px solid rgba(0,229,255,.3); color:#00e5ff; font-family:'JetBrains Mono',monospace; font-size:.8rem; font-weight:600; animation:sky-pipepulse 3s ease-in-out infinite;">6</span>
+            <span style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1rem;">Publish</span>
+          </div>
+          <p style="margin:0; color:#8e9bb0; font-size:.84rem; line-height:1.5;">Only validated JSON is committed to the public record.</p>
+        </div>
+      </div>
     </div>
   </section>
+
+  <!-- ===== LATEST INTELLIGENCE ===== -->
+  <section id="latest" style="position:relative; padding:clamp(40px,6vw,80px) clamp(20px,6vw,80px);">
+    <div style="max-width:1120px; margin:0 auto;">
+      <div data-reveal style="display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:36px;">
+        <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.6rem,3vw,2.3rem); margin:0; letter-spacing:-.01em;">Latest intelligence</h2>
+        <a href="/sections/" style="font-family:'JetBrains Mono',monospace; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase;">View all lanes →</a>
+      </div>
+
+      <!-- lead -->
+      {% if articles and articles|length > 0 %}
+      {% set lead = articles[0] %}
+      {% set conf_bg = 'rgba(41,176,131,.14)' %}
+      {% set conf_bd = 'rgba(41,176,131,.30)' %}
+      {% set conf_tx = '#bbf3df' %}
+      {% set conf_dot = '#29b083' %}
+      {% if lead.confidence_class == 'medium' %}
+        {% set conf_bg = 'rgba(245,185,55,.14)' %}
+        {% set conf_bd = 'rgba(245,185,55,.30)' %}
+        {% set conf_tx = '#ffe3a1' %}
+        {% set conf_dot = '#f5b937' %}
+      {% elif lead.confidence_class == 'low' %}
+        {% set conf_bg = 'rgba(233,107,107,.15)' %}
+        {% set conf_bd = 'rgba(233,107,107,.30)' %}
+        {% set conf_tx = '#ffd0d0' %}
+        {% set conf_dot = '#e96b6b' %}
+      {% endif %}
+
+      <a data-reveal data-card href="{{ lead.article_url }}" class="sky-lead" style="display:grid; grid-template-columns:minmax(0,0.82fr) minmax(0,1fr); gap:0; margin-bottom:16px; padding:0; border-radius:22px; background:linear-gradient(135deg, rgba(17,23,32,.9), rgba(11,17,24,.9)); border:1px solid rgba(142,163,190,.16); position:relative; overflow:hidden; transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease;">
+        <div class="sky-lead-media" style="position:relative; min-height:300px;">
+          <img src="{{ lead.image_url|default('/assets/images/default.jpg') }}" alt="{{ lead.title }}" style="width:100%; height:100%; object-fit:cover; display:block;">
+          <div style="position:absolute; top:12px; left:12px; font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.1em; color:#00e5ff; background:rgba(5,7,12,.65); padding:4px 9px; border-radius:6px; pointer-events:none;">FIG.01 · SOURCE DOCUMENT</div>
+        </div>
+        <div style="padding:clamp(24px,3vw,40px); display:flex; flex-direction:column; justify-content:center;">
+          <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.14em; color:#00e5ff; text-transform:uppercase; margin:0 0 16px;">Lead briefing · {{ lead.section_title }}</p>
+          <h3 style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:clamp(1.5rem,2.8vw,2.4rem); line-height:1.1; margin:0 0 14px; max-width:22ch;">{{ lead.title }}</h3>
+          <p style="color:#a9b6c8; max-width:64ch; margin:0 0 22px; font-size:1.05rem;">{{ lead.dek }}</p>
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px;">
+            <span class="confidence-badge {{ lead.confidence_class }}" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:999px; background:{{ conf_bg }}; border:1px solid {{ conf_bd }}; color:{{ conf_tx }}; font-size:.78rem; font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:{{ conf_dot }};"></span>{{ lead.confidence_label|upper }}</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:.78rem; color:#8e9bb0;">{{ lead.published_at }}</span>
+          </div>
+        </div>
+      </a>
+      {% endif %}
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px;">
+        {% if articles and articles|length > 1 %}
+        {% for article in articles[1:] %}
+          {% set conf_bg = 'rgba(41,176,131,.14)' %}
+          {% set conf_bd = 'rgba(41,176,131,.30)' %}
+          {% set conf_tx = '#bbf3df' %}
+          {% set conf_dot = '#29b083' %}
+          {% if article.confidence_class == 'medium' %}
+            {% set conf_bg = 'rgba(245,185,55,.14)' %}
+            {% set conf_bd = 'rgba(245,185,55,.30)' %}
+            {% set conf_tx = '#ffe3a1' %}
+            {% set conf_dot = '#f5b937' %}
+          {% elif article.confidence_class == 'low' %}
+            {% set conf_bg = 'rgba(233,107,107,.15)' %}
+            {% set conf_bd = 'rgba(233,107,107,.30)' %}
+            {% set conf_tx = '#ffd0d0' %}
+            {% set conf_dot = '#e96b6b' %}
+          {% endif %}
+
+          <a data-reveal data-card href="{{ article.article_url }}" style="display:flex; flex-direction:column; padding:0; border-radius:18px; overflow:hidden; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14); transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease; height:100%;">
+            <div style="position:relative; width:100%; aspect-ratio:16/9;">
+              <img src="{{ article.image_url|default('/assets/images/default.jpg') }}" alt="{{ article.title }}" style="width:100%; height:100%; object-fit:cover; display:block;">
+            </div>
+            <div style="display:flex; flex-direction:column; padding:22px; flex:1;">
+              <p style="font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.12em; color:#00e5ff; text-transform:uppercase; margin:0 0 12px;">{{ article.section_title }}</p>
+              <h3 style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1.18rem; line-height:1.25; margin:0 0 10px; color:#f4f6fa;">{{ article.title }}</h3>
+              <p style="color:#8e9bb0; font-size:.92rem; margin:0 0 20px; flex:1;">{{ article.dek }}</p>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                <span class="confidence-badge {{ article.confidence_class }}" style="display:inline-flex; align-items:center; gap:7px; padding:5px 11px; border-radius:999px; background:{{ conf_bg }}; border:1px solid {{ conf_bd }}; color:{{ conf_tx }}; font-size:.72rem; font-weight:600; letter-spacing:.03em;"><span style="width:6px;height:6px;border-radius:50%;background:{{ conf_dot }};"></span>{{ article.confidence_label|upper }}</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#8e9bb0;">{{ article.published_at }}</span>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ENTRY POINTS ===== -->
+  <section style="position:relative; padding:clamp(50px,7vw,100px) clamp(20px,6vw,80px);">
+    <div style="max-width:1120px; margin:0 auto;">
+      <h2 data-reveal style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.6rem,3vw,2.3rem); margin:0 0 36px; letter-spacing:-.01em;">Explore the record</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px;">
+        <a data-reveal data-card href="/youtube/" style="position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; min-height:220px; padding:28px; border-radius:20px; background:linear-gradient(160deg, rgba(0,229,255,.10), rgba(17,21,28,.85)); border:1px solid rgba(0,229,255,.2); transition:transform .3s ease, box-shadow .3s ease;">
+          <div style="position:absolute; bottom:-60px; right:-40px; width:180px; height:180px; border:1px solid rgba(0,229,255,.2); border-radius:50%;"><span style="position:absolute; top:50%; left:50%; width:80px; height:1px; background:linear-gradient(90deg,#00e5ff,transparent); transform-origin:left center; animation:sky-sweep 4s linear infinite;"></span></div>
+          <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.14em; color:#00e5ff; text-transform:uppercase; margin:0;">Channel intel</p>
+          <div style="position:relative;">
+            <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.5rem; margin:0 0 8px;">10 monitored channels</h3>
+            <p style="color:#a9b6c8; margin:0; font-size:.95rem;">Ranked leaderboard, filters, and per-episode analysis staging. →</p>
+          </div>
+        </a>
+        <a data-reveal data-card href="/sections/" style="display:flex; flex-direction:column; justify-content:space-between; min-height:220px; padding:28px; border-radius:20px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14); transition:transform .3s ease, box-shadow .3s ease;">
+          <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.14em; color:#00e5ff; text-transform:uppercase; margin:0;">Evidence library</p>
+          <div>
+            <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.5rem; margin:0 0 8px;">Browse by lane</h3>
+            <p style="color:#8e9bb0; margin:0; font-size:.95rem;">Latest briefings, source digests, and breaking briefs. →</p>
+          </div>
+        </a>
+        <a data-reveal data-card href="/sections/" style="display:flex; flex-direction:column; justify-content:space-between; min-height:220px; padding:28px; border-radius:20px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14); transition:transform .3s ease, box-shadow .3s ease;">
+          <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.14em; color:#00e5ff; text-transform:uppercase; margin:0;">Standards</p>
+          <div>
+            <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.5rem; margin:0 0 8px;">Editorial method</h3>
+            <p style="color:#8e9bb0; margin:0; font-size:.95rem;">How we grade confidence and separate claim from confirmation. →</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer style="border-top:1px solid rgba(142,163,190,.12); padding:48px clamp(20px,6vw,80px); margin-top:40px;">
+    <div style="max-width:1120px; margin:0 auto; display:flex; flex-wrap:wrap; gap:24px; align-items:center; justify-content:space-between;">
+      <div style="display:flex; align-items:center; gap:11px;">
+        <span style="position:relative; width:22px; height:22px; display:inline-block;">
+          <span style="position:absolute; inset:0; border:1.5px solid rgba(0,229,255,.55); border-radius:50%;"></span>
+          <span style="position:absolute; top:50%; left:50%; width:5px; height:5px; margin:-2.5px 0 0 -2.5px; background:#00e5ff; border-radius:50%;"></span>
+        </span>
+        <span style="font-family:'Space Grotesk',sans-serif; font-weight:700;">Skyledger</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#6c7a8f; margin-left:8px;">skyledger.space</span>
+      </div>
+      <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#6c7a8f; margin:0; max-width:52ch;">Evidence-first. We report source-backed claims, not confirmations. © 2026 Skyledger Observatory.</p>
+    </div>
+  </footer>
 </div>
 {% endblock %}

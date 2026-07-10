@@ -14,25 +14,58 @@
   <meta property="og:url" content="{{ canonical_url }}">
   <link rel="alternate" type="application/rss+xml" title="UFO / UAP News Hub RSS" href="{{ site_root }}/rss.xml">
   <link rel="icon" href="{{ site_root }}/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ site_root }}/assets/css/theme.css">
   <script defer src="{{ site_root }}/assets/js/app.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
   <main id="content" class="page">
-    <nav class="site-nav" aria-label="Primary">
-      <div class="brand">
-        <a href="{{ site_root }}/" style="color: inherit;">Skyledger</a>
-      </div>
-      <div class="links">
-        <a href="{{ site_root }}/sections/index.html">Sections</a>
-        <a href="{{ site_root }}/youtube/index.html">YouTube</a>
-        <a href="{{ site_root }}/about.html">About</a>
-        <a href="{{ site_root }}/editorial-standards.html">Standards</a>
-        <a href="{{ site_root }}/status.html">Status</a>
-        <a href="{{ site_root }}/rss.xml">RSS</a>
-      </div>
-    </nav>
+    <div id="sky-nav-root" class="sky-nav-wrap sky-nav-orbit">
+      <nav data-navbar class="sky-nav-bar" aria-label="Primary">
+        <a href="{{ site_root }}/" class="sky-nav-brand">
+          <span class="sky-logo">
+            <span class="sky-logo-ring-1"></span>
+            <span class="sky-logo-ring-2"></span>
+            <span class="sky-logo-dot-center"></span>
+            <span class="sky-logo-orbit">
+              <span class="sky-logo-dot-orbit"></span>
+            </span>
+          </span>
+          <span class="sky-brand-text">Skyledger</span>
+        </a>
+
+        <div class="sky-nav-links">
+          <a href="{{ site_root }}/" data-magnetic class="sky-nav-link">
+            <span data-mag-inner class="sky-nav-link-inner">
+              <span class="sky-nav-dot"></span>Briefing
+            </span>
+          </a>
+          <a href="{{ site_root }}/sections/index.html" data-magnetic class="sky-nav-link">
+            <span data-mag-inner class="sky-nav-link-inner">
+              <span class="sky-nav-dot"></span>Evidence
+            </span>
+          </a>
+          <a href="{{ site_root }}/youtube/index.html" data-magnetic class="sky-nav-link">
+            <span data-mag-inner class="sky-nav-link-inner">
+              <span class="sky-nav-dot"></span>Channels
+            </span>
+          </a>
+        </div>
+
+        <div class="sky-nav-right">
+          <div class="sky-nav-status">
+            <span class="sky-nav-pulse"></span>
+            <span class="sky-nav-status-text">Live &middot; {{ last_run | default("10 JUL 14:00Z") }}</span>
+          </div>
+          <a href="{{ site_root }}/youtube/index.html" data-magnetic class="sky-nav-cta">
+            <span data-mag-inner>Intel Feed</span>
+          </a>
+        </div>
+      </nav>
+    </div>
     {% block content %}{% endblock %}
   </main>
 </body>

@@ -1,23 +1,70 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="hero">
-  <p class="eyebrow">Section index</p>
-  <h1>Sections</h1>
-  <p class="lede">Each section groups a specific reporting lane from the pipeline.</p>
-</header>
-<section class="panel">
-  <div class="card-grid">
-  {% if sections %}
-  {% for section in sections %}
-    <article class="card">
-      <h2><a href="{{ section.url }}">{{ section.title }}</a></h2>
-      <p>{{ section.description }}</p>
-      <p class="meta">{{ section.count }} item{{ 's' if section.count != 1 else '' }}</p>
-    </article>
-  {% endfor %}
-  {% else %}
-    <p class="empty-state">No sections have been published yet.</p>
-  {% endif %}
+<div style="position:relative; width:100%; max-width:1120px; margin:0 auto; padding:140px clamp(20px,6vw,60px) 100px;">
+  <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.16em; color:#00e5ff; text-transform:uppercase; margin:0 0 16px;">// Evidence library</p>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(2.2rem,5vw,3.6rem); line-height:1.02; letter-spacing:-.02em; margin:0 0 16px; max-width:18ch;">Browse the record by lane</h1>
+  <p style="font-size:clamp(1rem,1.5vw,1.2rem); color:#b6c2d4; max-width:60ch; margin:0 0 44px;">Each lane groups a specific reporting workflow from the pipeline. Every item is source-linked and confidence-graded.</p>
+
+  <!-- lane cards -->
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:48px;">
+    {% if sections %}
+    {% for section in sections %}
+      <button data-reveal data-card data-lane-btn="{{ section.title }}" style="display:block; padding:22px; border-radius:18px; cursor:pointer; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14); transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease; width:100%; font-family:'Inter',sans-serif;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;">
+          <span style="display:inline-flex; padding:3px 9px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.1em; color:#9fb0c6; background:rgba(142,163,190,.12); border:1px solid rgba(142,163,190,.2);">{{ section.title.split(' ')[0] | upper }}</span>
+          <span data-lane-count="{{ section.title }}" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.6rem; color:#4a5769;">{{ section.count }}</span>
+        </div>
+        <h3 style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1.15rem; margin:0 0 6px; text-align:left;">{{ section.title }}</h3>
+        <p style="margin:0; color:#8e9bb0; font-size:.9rem; text-align:left;">{{ section.description }}</p>
+      </button>
+    {% endfor %}
+    {% endif %}
   </div>
-</section>
+
+  <!-- filter tabs -->
+  <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid rgba(142,163,190,.12);">
+    <button data-lane-tab="All" style="padding:8px 15px; border-radius:999px; border:1px solid rgba(0,229,255,.4); background:rgba(0,229,255,.12); color:#00e5ff; font-size:.85rem; font-weight:500; cursor:pointer; transition:all .2s ease; font-family:'Inter',sans-serif;">All</button>
+    {% if sections %}
+    {% for section in sections %}
+      <button data-lane-tab="{{ section.title }}" style="padding:8px 15px; border-radius:999px; border:1px solid rgba(142,163,190,.18); background:transparent; color:#c3cdda; font-size:.85rem; font-weight:500; cursor:pointer; transition:all .2s ease; font-family:'Inter',sans-serif;">{{ section.title }}</button>
+    {% endfor %}
+    {% endif %}
+    <span data-lane-result-count style="margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#6c7a8f;"></span>
+  </div>
+
+  <!-- article list -->
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    {% if sections %}
+    {% for section in sections %}
+      {% if section.articles %}
+      {% for article in section.articles %}
+        <a data-reveal data-card data-lane-item="{{ section.title }}" href="{{ article.article_url }}" style="display:flex; flex-wrap:wrap; gap:18px; align-items:center; padding:22px 24px; border-radius:16px; background:rgba(17,21,28,.6); border:1px solid rgba(142,163,190,.14); transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease;">
+          <div style="flex:1; min-width:240px;">
+            <p style="font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.12em; color:#00e5ff; text-transform:uppercase; margin:0 0 8px;">{{ section.title }}</p>
+            <h3 style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:clamp(1.05rem,1.7vw,1.3rem); line-height:1.25; margin:0 0 8px; color:#f4f6fa;">{{ article.title }}</h3>
+            <p style="margin:0; color:#8e9bb0; font-size:.92rem;">{{ article.dek }}</p>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px; flex:0 0 auto;">
+            {% set conf_color = '#29b083' if article.confidence_class == 'conf-high' else ('#f5b937' if article.confidence_class == 'conf-med' else '#e96b6b') %}
+            {% set conf_bg = 'rgba(41,176,131,.14)' if article.confidence_class == 'conf-high' else ('rgba(245,185,55,.14)' if article.confidence_class == 'conf-med' else 'rgba(233,107,107,.15)') %}
+            {% set conf_bd = 'rgba(41,176,131,.30)' if article.confidence_class == 'conf-high' else ('rgba(245,185,55,.30)' if article.confidence_class == 'conf-med' else 'rgba(233,107,107,.30)') %}
+            {% set conf_tx = '#bbf3df' if article.confidence_class == 'conf-high' else ('#ffe3a1' if article.confidence_class == 'conf-med' else '#ffd0d0') %}
+            
+            <span style="display:inline-flex; align-items:center; gap:7px; padding:5px 11px; border-radius:999px; background:{{ conf_bg }}; border:1px solid {{ conf_bd }}; color:{{ conf_tx }}; font-size:.72rem; font-weight:600; white-space:nowrap;">
+              <span style="width:6px; height:6px; border-radius:50%; background:{{ conf_color }};"></span>{{ article.confidence_label }}
+            </span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#8e9bb0;">{{ article.published_at }}</span>
+          </div>
+        </a>
+      {% endfor %}
+      {% endif %}
+    {% endfor %}
+    {% endif %}
+  </div>
+
+  <footer style="margin-top:70px; padding-top:36px; border-top:1px solid rgba(142,163,190,.12); display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between;">
+    <span style="font-family:'Space Grotesk',sans-serif; font-weight:700;">Skyledger</span>
+    <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#6c7a8f; margin:0;">We report source-backed claims, not confirmations. &copy; 2026</p>
+  </footer>
+</div>
 {% endblock %}

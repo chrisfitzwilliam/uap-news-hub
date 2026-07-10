@@ -1,30 +1,146 @@
 {% extends "base.html" %}
+
 {% block content %}
-<article class="story">
-  <header class="story-header">
-    <p class="eyebrow">{{ article.section_title }}</p>
-    <h1>{{ article.title }}</h1>
-    <p class="lede">{{ article.dek }}</p>
-    <div class="story-meta">
-      <span class="confidence-badge {{ article.confidence_class }}">{{ article.confidence_label }}</span>
-      <span class="meta">{{ article.published_at }}</span>
+<style>
+  html { scroll-behavior: smooth; }
+  .sky-prose h2 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(1.3rem,2.4vw,1.7rem); letter-spacing: -.01em; margin: 42px 0 14px; color: #f4f6fa; }
+  .sky-prose h2:first-child { margin-top: 0; }
+  .sky-prose p { margin: 0 0 20px; color: #c3cdda; font-size: clamp(1.02rem,1.4vw,1.15rem); line-height: 1.7; }
+  .sky-prose p:last-child { margin-bottom: 0; }
+  .sky-cc { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 640px) { .sky-cc { grid-template-columns: 1fr !important; } }
+  @media (max-width: 860px) {
+    .sky-article-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+    .sky-article-grid aside { position: static !important; top: auto !important; }
+  }
+</style>
+
+<!-- reading progress -->
+<div style="position:fixed; top:0; left:0; right:0; height:3px; z-index:1100; background:transparent; pointer-events:none;">
+  <div id="sky-progress" style="height:100%; width:0%; background:linear-gradient(90deg,#00e5ff,#8fb3ff); box-shadow:0 0 12px rgba(0,229,255,.7); transition:width .1s linear;"></div>
+</div>
+
+<div style="position:relative; width:100%;">
+  <!-- article header -->
+  <header style="position:relative; overflow:hidden; padding:150px clamp(20px,6vw,60px) 0;">
+    <div style="position:absolute; top:-120px; left:50%; transform:translateX(-50%); width:900px; height:500px; max-width:120%; background:radial-gradient(closest-side, rgba(0,229,255,.10), transparent 70%); pointer-events:none;"></div>
+    <div style="position:relative; max-width:1120px; margin:0 auto;">
+      <a href="/sections/" style="display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:.74rem; letter-spacing:.08em; color:#8e9bb0; margin-bottom:26px;">← Evidence library</a>
+      <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.16em; color:#00e5ff; text-transform:uppercase; margin:0 0 18px;">{{ article.section_title }}</p>
+      <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(2rem,4.6vw,3.4rem); line-height:1.05; letter-spacing:-.02em; margin:0 0 20px; max-width:22ch;">{{ article.title }}</h1>
+      <p style="font-size:clamp(1.1rem,1.7vw,1.35rem); color:#b6c2d4; max-width:64ch; margin:0 0 26px;">{{ article.dek }}</p>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px; padding-bottom:40px; border-bottom:1px solid rgba(142,163,190,.14);">
+        
+        {% if article.confidence_class == 'high' %}
+          {% set conf_bg = 'rgba(41,176,131,.14)' %}
+          {% set conf_bd = 'rgba(41,176,131,.30)' %}
+          {% set conf_tx = '#bbf3df' %}
+          {% set conf_dot = '#29b083' %}
+        {% elif article.confidence_class == 'medium' %}
+          {% set conf_bg = 'rgba(245,185,55,.14)' %}
+          {% set conf_bd = 'rgba(245,185,55,.30)' %}
+          {% set conf_tx = '#ffe3a1' %}
+          {% set conf_dot = '#f5b937' %}
+        {% else %}
+          {% set conf_bg = 'rgba(233,107,107,.14)' %}
+          {% set conf_bd = 'rgba(233,107,107,.30)' %}
+          {% set conf_tx = '#ffd0d0' %}
+          {% set conf_dot = '#e96b6b' %}
+        {% endif %}
+
+        <span style="display:inline-flex; align-items:center; gap:8px; padding:6px 13px; border-radius:999px; background:{{ conf_bg }}; border:1px solid {{ conf_bd }}; color:{{ conf_tx }}; font-size:.78rem; font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:{{ conf_dot }};box-shadow:0 0 8px {{ conf_bg | replace('.14', '.7') }};"></span>{{ article.confidence_label | upper }}</span>
+        
+        {% for label in article.claim_labels %}
+        <span style="display:inline-flex; align-items:center; padding:5px 12px; border-radius:999px; background:rgba(143,179,255,.14); border:1px solid rgba(143,179,255,.28); color:#d8e5ff; font-size:.75rem; font-weight:600;">{{ label }}</span>
+        {% endfor %}
+        <span style="font-family:'JetBrains Mono',monospace; font-size:.78rem; color:#8e9bb0; margin-left:auto;">{{ article.published_at | upper }}</span>
+      </div>
     </div>
-    {% if article.claim_labels %}
-    <ul class="claim-labels" aria-label="Claim labels">
-      {% for label in article.claim_labels %}
-      <li>{{ label }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
   </header>
-  <section class="body prose">{{ article.body_html | safe }}</section>
-  <section class="source-panel">
-    <h2>Sources</h2>
-    <ul>
-    {% for source in article.source_items %}
-      <li><a href="{{ source.url }}">{{ source.label }}</a></li>
-    {% endfor %}
-    </ul>
-  </section>
-</article>
+
+  <!-- hero figure -->
+  <figure data-reveal style="max-width:1120px; margin:0 auto; padding:40px clamp(20px,6vw,60px) 0;">
+    <div style="position:relative; width:100%; aspect-ratio:21/9; border-radius:20px; overflow:hidden; border:1px solid rgba(142,163,190,.16);">
+      <img src="{{ article.hero_image | default('/assets/images/default-hero.jpg') }}" alt="Hero Figure" style="width:100%; height:100%; object-fit:cover;">
+      <div style="position:absolute; bottom:12px; left:14px; font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.1em; color:#9fb0c6; background:rgba(5,7,12,.68); padding:4px 9px; border-radius:6px; pointer-events:none;">FIG.01 · PUBLISHED {{ article.published_at | upper }}</div>
+    </div>
+  </figure>
+
+  <!-- body + sidebar -->
+  <div class="sky-article-grid" style="max-width:1120px; margin:0 auto; padding:48px clamp(20px,6vw,60px) 90px; display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:56px; align-items:start;">
+    <article class="sky-prose">
+      {{ article.body_html | safe }}
+      
+      <!-- can / cannot diagram -->
+      <figure style="margin:32px 0 32px; padding:0;">
+        <figcaption style="font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em; color:#8e9bb0; text-transform:uppercase; margin-bottom:14px;">What an annual report does — and does not — establish</figcaption>
+        <div class="sky-cc" style="display:grid; gap:14px;">
+          <div style="padding:20px 22px; border-radius:16px; background:rgba(41,176,131,.06); border:1px solid rgba(41,176,131,.24);">
+            <div style="display:flex; align-items:center; gap:9px; margin-bottom:12px;"><span style="width:22px;height:22px;border-radius:7px;background:rgba(41,176,131,.18);border:1px solid rgba(41,176,131,.4);color:#bbf3df;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;">✓</span><span style="font-family:'Space Grotesk',sans-serif;font-weight:600;color:#bbf3df;font-size:.98rem;">Can establish</span></div>
+            <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;">
+              <li style="display:flex;gap:9px;color:#c3cdda;font-size:.9rem;"><span style="color:#29b083;">•</span>What agencies say they received</li>
+              <li style="display:flex;gap:9px;color:#c3cdda;font-size:.9rem;"><span style="color:#29b083;">•</span>How they describe their analytic work</li>
+              <li style="display:flex;gap:9px;color:#c3cdda;font-size:.9rem;"><span style="color:#29b083;">•</span>What they chose to release publicly</li>
+            </ul>
+          </div>
+          <div style="padding:20px 22px; border-radius:16px; background:rgba(245,185,55,.05); border:1px solid rgba(245,185,55,.22);">
+            <div style="display:flex; align-items:center; gap:9px; margin-bottom:12px;"><span style="width:22px;height:22px;border-radius:7px;background:rgba(245,185,55,.16);border:1px solid rgba(245,185,55,.4);color:#ffe3a1;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;">✕</span><span style="font-family:'Space Grotesk',sans-serif;font-weight:600;color:#ffe3a1;font-size:.98rem;">Cannot establish</span></div>
+            <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;">
+              <li style="display:flex;gap:9px;color:#c3cdda;font-size:.9rem;"><span style="color:#f5b937;">•</span>The origin of any individual case</li>
+              <li style="display:flex;gap:9px;color:#c3cdda;font-size:.9rem;"><span style="color:#f5b937;">•</span>That “unresolved” means explained</li>
+              <li style="display:flex;gap:9px;color:#c3cdda;font-size:.9rem;"><span style="color:#f5b937;">•</span>A conclusion the record can't yet support</li>
+            </ul>
+          </div>
+        </div>
+      </figure>
+
+      <!-- sources panel -->
+      <div style="margin-top:44px; padding:24px 26px; border-radius:18px; background:rgba(0,229,255,.04); border:1px solid rgba(0,229,255,.16);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.12em; color:#00e5ff; text-transform:uppercase;">Primary sources</span>
+          <span style="flex:1; height:1px; background:rgba(0,229,255,.16);"></span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:.7rem; color:#8e9bb0;">N={{ article.source_items | length }}</span>
+        </div>
+        {% for source in article.source_items %}
+        <a href="{{ source.url }}" target="_blank" style="display:flex; align-items:center; gap:12px; padding:12px 0; color:#c3cdda; text-decoration:none;">
+          <span style="width:8px; height:8px; border-radius:50%; background:#00e5ff; flex:0 0 auto; box-shadow:0 0 8px rgba(0,229,255,.7);"></span>
+          <span style="flex:1; font-size:.95rem;">{{ source.label }}</span>
+          <span style="color:#00e5ff;">↗</span>
+        </a>
+        {% endfor %}
+      </div>
+    </article>
+
+    <!-- sticky evidence sidebar -->
+    <aside style="position:sticky; top:110px; display:flex; flex-direction:column; gap:16px;">
+      <div style="padding:22px; border-radius:18px; background:rgba(17,21,28,.7); border:1px solid rgba(142,163,190,.14);">
+        <p style="font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em; color:#00e5ff; text-transform:uppercase; margin:0 0 16px;">Evidence readout</p>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="color:#8e9bb0; font-size:.86rem;">Confidence</span>
+            <span style="display:inline-flex; align-items:center; gap:7px; color:{{ conf_tx }}; font-size:.86rem; font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:{{ conf_dot }};"></span>{{ article.confidence_label }}</span>
+          </div>
+          <div style="height:1px; background:rgba(142,163,190,.12);"></div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:#8e9bb0; font-size:.86rem;">Lane</span><span style="font-size:.86rem;">{{ article.section_title }}</span></div>
+          <div style="height:1px; background:rgba(142,163,190,.12);"></div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:#8e9bb0; font-size:.86rem;">Review</span><span style="font-size:.86rem; color:#bbf3df;">Passed</span></div>
+          <div style="height:1px; background:rgba(142,163,190,.12);"></div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:#8e9bb0; font-size:.86rem;">Sources</span><span style="font-family:'JetBrains Mono',monospace; font-size:.86rem; color:#00e5ff;">{{ article.source_items | length }} primary</span></div>
+        </div>
+      </div>
+
+      <div style="padding:22px; border-radius:18px; background:rgba(245,185,55,.05); border:1px solid rgba(245,185,55,.2);">
+        <p style="font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em; color:#f5b937; text-transform:uppercase; margin:0 0 10px;">Editorial note</p>
+        <p style="margin:0; font-size:.88rem; color:#c3cdda;">Unresolved is an analytic status, not a conclusion. We label what the record supports and nothing more.</p>
+      </div>
+    </aside>
+  </div>
+
+  <footer style="border-top:1px solid rgba(142,163,190,.12); padding:44px clamp(20px,6vw,60px);">
+    <div style="max-width:1120px; margin:0 auto; display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between;">
+      <span style="font-family:'Space Grotesk',sans-serif; font-weight:700;">Skyledger</span>
+      <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#6c7a8f; margin:0;">Evidence-first · skyledger.space · © 2026</p>
+    </div>
+  </footer>
+</div>
 {% endblock %}

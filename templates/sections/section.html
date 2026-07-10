@@ -1,27 +1,41 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="hero">
-  <p class="eyebrow">Section</p>
-  <h1>{{ section.title }}</h1>
-  <p class="lede">{{ section.description }}</p>
-</header>
-<section class="panel">
-  <div class="story-list">
-  {% if section.articles %}
-  {% for article in section.articles %}
-    <article class="story-card">
-      <p class="kicker">{{ article.section_title }}</p>
-      <h2><a href="{{ article.article_url }}">{{ article.title }}</a></h2>
-      <p>{{ article.dek }}</p>
-      <div class="story-meta">
-        <span class="confidence-badge {{ article.confidence_class }}">{{ article.confidence_label }}</span>
-        <span class="meta">{{ article.published_at }}</span>
-      </div>
-    </article>
-  {% endfor %}
-  {% else %}
-    <p class="empty-state">No articles are published in this section yet.</p>
-  {% endif %}
+<div style="position:relative; width:100%; max-width:1120px; margin:0 auto; padding:140px clamp(20px,6vw,60px) 100px;">
+  <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.16em; color:#00e5ff; text-transform:uppercase; margin:0 0 16px;">// Section</p>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(2.2rem,5vw,3.6rem); line-height:1.02; letter-spacing:-.02em; margin:0 0 16px; max-width:18ch;">{{ section.title }}</h1>
+  <p style="font-size:clamp(1rem,1.5vw,1.2rem); color:#b6c2d4; max-width:60ch; margin:0 0 44px;">{{ section.description }}</p>
+
+  <!-- article list -->
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    {% if section.articles %}
+    {% for article in section.articles %}
+      <a data-reveal data-card href="{{ article.article_url }}" style="display:flex; flex-wrap:wrap; gap:18px; align-items:center; padding:22px 24px; border-radius:16px; background:rgba(17,21,28,.6); border:1px solid rgba(142,163,190,.14); transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease;">
+        <div style="flex:1; min-width:240px;">
+          <p style="font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.12em; color:#00e5ff; text-transform:uppercase; margin:0 0 8px;">{{ article.section_title }}</p>
+          <h3 style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:clamp(1.05rem,1.7vw,1.3rem); line-height:1.25; margin:0 0 8px; color:#f4f6fa;">{{ article.title }}</h3>
+          <p style="margin:0; color:#8e9bb0; font-size:.92rem;">{{ article.dek }}</p>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px; flex:0 0 auto;">
+          {% set conf_color = '#29b083' if article.confidence_class == 'conf-high' else ('#f5b937' if article.confidence_class == 'conf-med' else '#e96b6b') %}
+          {% set conf_bg = 'rgba(41,176,131,.14)' if article.confidence_class == 'conf-high' else ('rgba(245,185,55,.14)' if article.confidence_class == 'conf-med' else 'rgba(233,107,107,.15)') %}
+          {% set conf_bd = 'rgba(41,176,131,.30)' if article.confidence_class == 'conf-high' else ('rgba(245,185,55,.30)' if article.confidence_class == 'conf-med' else 'rgba(233,107,107,.30)') %}
+          {% set conf_tx = '#bbf3df' if article.confidence_class == 'conf-high' else ('#ffe3a1' if article.confidence_class == 'conf-med' else '#ffd0d0') %}
+          
+          <span style="display:inline-flex; align-items:center; gap:7px; padding:5px 11px; border-radius:999px; background:{{ conf_bg }}; border:1px solid {{ conf_bd }}; color:{{ conf_tx }}; font-size:.72rem; font-weight:600; white-space:nowrap;">
+            <span style="width:6px; height:6px; border-radius:50%; background:{{ conf_color }};"></span>{{ article.confidence_label }}
+          </span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#8e9bb0;">{{ article.published_at }}</span>
+        </div>
+      </a>
+    {% endfor %}
+    {% else %}
+      <p style="color:#8e9bb0;">No articles are published in this section yet.</p>
+    {% endif %}
   </div>
-</section>
+
+  <footer style="margin-top:70px; padding-top:36px; border-top:1px solid rgba(142,163,190,.12); display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between;">
+    <span style="font-family:'Space Grotesk',sans-serif; font-weight:700;">Skyledger</span>
+    <p style="font-family:'JetBrains Mono',monospace; font-size:.72rem; color:#6c7a8f; margin:0;">We report source-backed claims, not confirmations. &copy; 2026</p>
+  </footer>
+</div>
 {% endblock %}
