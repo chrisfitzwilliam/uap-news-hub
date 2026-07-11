@@ -437,6 +437,16 @@ def _plural_label(count: int, singular: str, plural: str | None = None) -> str:
     return f"{count} {singular if count == 1 else plural or singular + 's'}"
 
 
+def _format_number(num: int | None) -> str:
+    if num is None:
+        return "N/A"
+    if num >= 1_000_000:
+        return f"{num / 1_000_000:.1f}M".replace(".0M", "M")
+    if num >= 1_000:
+        return f"{num / 1_000:.1f}K".replace(".0K", "K")
+    return str(num)
+
+
 def _load_youtube_dashboard(root: Path, site_url: str | None) -> dict[str, Any]:
     registry_path = root / "content" / "registry" / "youtube_channels.json"
     packets_dir = root / "data" / "source-packets"
@@ -501,6 +511,9 @@ def _load_youtube_dashboard(root: Path, site_url: str | None) -> dict[str, Any]:
                 "priority": int(channel.get("priority") or 0),
                 "category_label": _friendly_label(str(channel.get("category", "youtube"))),
                 "reason": str(channel.get("reason", "")),
+                "subscriber_count": _format_number(channel.get("subscriber_count")),
+                "video_count": _format_number(channel.get("video_count")),
+                "average_views": _format_number(channel.get("average_views")),
                 "download_count": download_count,
                 "transcript_count": transcript_count,
                 "download_label": _plural_label(download_count, "download"),

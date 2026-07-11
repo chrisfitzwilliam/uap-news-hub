@@ -78,10 +78,10 @@
               <p style="margin:0; color:#8e9bb0; font-size:.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ channel.reason }}</p>
             </div>
 
-            <!-- activity meter (hidden on small via wrap) -->
-            <div style="display:flex; flex-direction:column; gap:6px; width:120px; flex:0 0 auto;">
-              <div style="display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.08em; color:#6c7a8f; text-transform:uppercase;"><span>Activity</span><span style="color:#9fb0c6;">{{ channel.activity | default(50) }}</span></div>
-              <div style="height:5px; border-radius:999px; background:rgba(142,163,190,.16); overflow:hidden;"><div style="height:100%; width:{{ channel.activity | default(50) }}%; border-radius:999px; background:linear-gradient(90deg,{{ tc_c }},rgba(0,229,255,.5)); transition:width .5s ease;"></div></div>
+            <!-- stats -->
+            <div style="display:flex; flex-direction:column; gap:8px; width:140px; flex:0 0 auto;">
+              <div style="display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.08em; color:#6c7a8f; text-transform:uppercase;"><span>Subscribers</span><span style="color:#9fb0c6;">{{ channel.subscriber_count }}</span></div>
+              <div style="display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.08em; color:#6c7a8f; text-transform:uppercase;"><span>Avg Views</span><span style="color:#9fb0c6;">{{ channel.average_views }}</span></div>
             </div>
 
             <div style="display:flex; align-items:center; gap:14px; flex:0 0 auto;">

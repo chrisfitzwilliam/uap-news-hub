@@ -49,6 +49,20 @@ def main():
                 channel["video_count"] = info.get("playlist_count")
                 channel["channel_description"] = info.get("description")
                 
+                # Fetch recent videos to get average views
+                videos_url = url.rstrip('/') + '/videos'
+                try:
+                    v_opts = {'extract_flat': 'in_playlist', 'playlist_items': '1,2,3,4,5,6,7,8,9,10', 'quiet': True}
+                    with yt_dlp.YoutubeDL(v_opts) as v_ydl:
+                        v_info = v_ydl.extract_info(videos_url, download=False)
+                        views = [e.get('view_count') for e in v_info.get('entries', []) if e.get('view_count') is not None]
+                        if views:
+                            channel["average_views"] = sum(views) // len(views)
+                        else:
+                            channel["average_views"] = None
+                except Exception as ve:
+                    print(f"  Could not fetch average views for {url}: {ve}")
+                
                 thumbnails = info.get("thumbnails", [])
                 avatar_url = None
                 
