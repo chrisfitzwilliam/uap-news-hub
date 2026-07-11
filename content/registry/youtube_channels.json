@@ -8,13 +8,19 @@
     "priority": 1,
     "active": true,
     "reason": "Active UFO/UAP interview and news channel with recurring analysis.",
-    "evidence_urls": ["https://www.youtube.com/c/ThatUFOPodcast"],
+    "evidence_urls": [
+      "https://www.youtube.com/c/ThatUFOPodcast"
+    ],
     "added_by": "manual",
     "added_at": "2026-07-06T00:00:00Z",
     "last_checked_at": null,
     "etag": null,
     "last_modified": null,
-    "consecutive_failures": 0
+    "consecutive_failures": 0,
+    "subscriber_count": 56600,
+    "video_count": 3,
+    "channel_description": "A range of guest interviews, up to date news, listener shows & deep dives into the UFO topic and related phenomena!",
+    "avatar_url": "https://yt3.googleusercontent.com/LsZgKI8SW7Rb9hYosiU8RgfVUPO5Y_EEkUf0mZ_S61FSgGERljjMTboF1dkb6UAVqAyqxmiYbA=s900-c-k-c0x00ffffff-no-rj"
   },
   {
     "id": "UC92qnF5yG2VnrSfz77OALAw",
@@ -25,13 +31,19 @@
     "priority": 2,
     "active": true,
     "reason": "Investigative UAP coverage and interviews from Matt Ford.",
-    "evidence_urls": ["https://www.youtube.com/@TheGoodTroubleShow"],
+    "evidence_urls": [
+      "https://www.youtube.com/@TheGoodTroubleShow"
+    ],
     "added_by": "manual",
     "added_at": "2026-07-06T00:00:00Z",
     "last_checked_at": null,
     "etag": null,
     "last_modified": null,
-    "consecutive_failures": 0
+    "consecutive_failures": 0,
+    "subscriber_count": 140000,
+    "video_count": 3,
+    "channel_description": "The Good Trouble Show with Matt Ford delivers evidence-based UAP and UFO disclosure investigations rooted in Science and Technology. We move beyond the headlines with forensic analysis of declassified government files, Pentagon sensor data, and interviews with leading experts.\n\nHost Matt Ford leads discussions with whistleblowers, aerospace engineers, and top journalists including Ross Coulthart, Luis \"Lue\" Elizondo, and Dr. Garry Nolan. This is your home for critical thinking and transparency on advanced aerospace technology and national security.\n\nWe're committed to uncovering the truth about Unidentified Anomalous Phenomena and the fight for disclosure \u2014 a community dedicated to facts, science, and government accountability.\n\n\u25b6\ufe0f START HERE: https://www.youtube.com/watch?v=CupmP9L1fnY\n\ud83d\udcfa Full Investigations Playlist: https://www.youtube.com/playlist?list=PLYoWuVUieCBVbKsox9cFGg1vyL7CUObEj\n\n\ud83d\udd14 New long-form investigations every Sunday at 1 PM PT.\n",
+    "avatar_url": "https://yt3.googleusercontent.com/s15vYPftMXWiZ4Uzhg3QD_UMuk66Ng6sagFnUxHpxpG-WB7mvA9od7yHXWX4lnCsl3xIoFWV1g=s900-c-k-c0x00ffffff-no-rj"
   },
   {
     "id": "UChDCgWtRhXO82TqsYDEuhug",
@@ -42,13 +54,19 @@
     "priority": 3,
     "active": true,
     "reason": "Official clips channel for WEAPONIZED investigative UAP interviews.",
-    "evidence_urls": ["https://www.youtube.com/@WeaponizedClips"],
+    "evidence_urls": [
+      "https://www.youtube.com/@WeaponizedClips"
+    ],
     "added_by": "manual",
     "added_at": "2026-07-06T00:00:00Z",
     "last_checked_at": null,
     "etag": null,
     "last_modified": null,
-    "consecutive_failures": 0
+    "consecutive_failures": 0,
+    "subscriber_count": 4420,
+    "video_count": 2,
+    "channel_description": "Official CLIPS channel for the WEAPONIZED Podcast. SUBSCRIBE for highlights!\n\nIn WEAPONIZED, Jeremy Corbell and George Knapp pull back the veil on the world of the known, to explore the unexplained. This multi-platform investigative series features exclusive interviews, never-before-seen footage, previously-suppressed documents, original audio and video recordings, and hard evidence related to UFOs, the paranormal, cutting-edge science, cover-ups, conspiracies, and big-time crimes. Original, groundbreaking conversations with government whistleblowers, spies, spooks, scientists, military officials, muckraking journalists, filmmakers, historians, artists, musicians, and major celebrities will cast a wide shadow through the other-world\u2026 and detail the human experiences that inform these extraordinary phenomena. Your curiosity will be WEAPONIZED.",
+    "avatar_url": "https://yt3.googleusercontent.com/NLjkZqZs_IfLAdMoLL07__xi6sD8WRJKLGRLFiQWdarjF5YgB2eMAAi9oCXn_EyD8UFf1m5vLw=s900-c-k-c0x00ffffff-no-rj"
   },
   {
     "id": "UCb06MkOyl7elDVl4WxmhE_w",
@@ -59,13 +77,19 @@
     "priority": 4,
     "active": true,
     "reason": "Official channel from a major UAP public figure and source of direct updates.",
-    "evidence_urls": ["https://www.youtube.com/@lueelizondo"],
+    "evidence_urls": [
+      "https://www.youtube.com/@lueelizondo"
+    ],
     "added_by": "manual",
     "added_at": "2026-07-06T00:00:00Z",
     "last_checked_at": null,
     "etag": null,
     "last_modified": null,
-    "consecutive_failures": 0
+    "consecutive_failures": 0,
+    "subscriber_count": 14,
+    "video_count": 0,
+    "channel_description": "",
+    "avatar_url": "https://yt3.googleusercontent.com/df-HKIqBWqXe8PJDTXZQcDuDipqQN5DQNnvWgPnOdpX0THi9xEajZ4uIQwEtTv_TzmsLz1cQHQ=s900-c-k-c0x00ffffff-no-rj"
   },
   {
     "id": "UCF3UCTZiVg9wrIEzO7Om6jw",
@@ -76,13 +100,19 @@
     "priority": 5,
     "active": true,
     "reason": "Skeptical UAP analysis channel useful for cross-checking claims.",
-    "evidence_urls": ["https://www.youtube.com/c/mickwest"],
+    "evidence_urls": [
+      "https://www.youtube.com/c/mickwest"
+    ],
     "added_by": "manual",
     "added_at": "2026-07-06T00:00:00Z",
     "last_checked_at": null,
     "etag": null,
     "last_modified": null,
-    "consecutive_failures": 0
+    "consecutive_failures": 0,
+    "subscriber_count": 59300,
+    "video_count": 3,
+    "channel_description": "I'm Mick West, skeptic, writer, UFO investigator, and former video game programmer. This is the official channel for videos relating to the debunking and other experiments I do on my forum MetaBunk.org. It's also where I post the video of my Podcast - Tales From the Rabbit Hole (tftrh.com) which focuses on long-form discussions with people whose lives have been affected by conspiracy theories. \nMy primary focus is on conspiracy theories. I investigate claims of evidence around those theories, covering everything: 9/11, UFOs, False Flags, Chemtrails, and even Flat Earth. I also discuss how best to help people who have fallen down the conspiracy theory rabbit hole, a topic I explore in my book: Escaping the Rabbit Hole - How to Debunk Conspiracy Theories using Facts, Logic, and Respect.\nTwitter: https://twitter.com/mickwest\nEmail: mick@mickwest.com",
+    "avatar_url": "https://yt3.googleusercontent.com/ytc/AIdro_n0KmeWqEEZ6829N_mljqJXJA1IDToqy3YK5pDpbyvDOqgD=s900-c-k-c0x00ffffff-no-rj"
   },
   {
     "id": "UCgslF1kPo4Kmv4Xrg8EyYmQ",
@@ -93,13 +123,19 @@
     "priority": 6,
     "active": true,
     "reason": "Need To Know UAP discussion hosted by Bryce Zabel.",
-    "evidence_urls": ["https://www.youtube.com/@BryceZabel"],
+    "evidence_urls": [
+      "https://www.youtube.com/@BryceZabel"
+    ],
     "added_by": "manual",
     "added_at": "2026-07-06T00:00:00Z",
     "last_checked_at": null,
     "etag": null,
     "last_modified": null,
-    "consecutive_failures": 0
+    "consecutive_failures": 0,
+    "subscriber_count": 80800,
+    "video_count": 3,
+    "channel_description": "Stellar Productions is a Los Angeles-based production company run by WGA Award-winning writer/producers Bryce Zabel and Jackie Zabel. \n\nSound, Light & Frequency is our current 36-episode immersive journey that asks: what if Hollywood hasn\u2019t just imagined UFOs \u2014 but has been part of a deeper, decades-long conversation about them? \n\nNeed to Know is Bryce Zabel\u2019s ongoing UFO/UAP news and analysis series with historian and author Richard Dolan. \n\nOur current production slate includes the feature film The Last Battle, being produced with Endurance Media, as well as the scripted podcast Undeniable, being produced with Lionsgate Television. Bryce has also authored three books that serve as rich intellectual property for potential adaptation into television series, podcasts, and feature films.\n",
+    "avatar_url": "https://yt3.googleusercontent.com/xcyOih3Iwwu5f1KdkzRGIvcrESwwTTUZPAee7Xb7qS96xFr_GLyHoE1OJxFQcKTnpGlIkztQ=s900-c-k-c0x00ffffff-no-rj"
   },
   {
     "id": "UCSTVGU0oHJp-gvlYPfWUvWQ",
@@ -110,13 +146,19 @@
     "priority": 7,
     "active": true,
     "reason": "Recurring UFO/UAP live shows, interviews, headline roundups, and community analysis.",
-    "evidence_urls": ["https://www.youtube.com/@PodcastUFO"],
+    "evidence_urls": [
+      "https://www.youtube.com/@PodcastUFO"
+    ],
     "added_by": "manual",
     "added_at": "2026-07-07T00:00:00Z",
     "last_checked_at": null,
     "etag": null,
     "last_modified": null,
-    "consecutive_failures": 0
+    "consecutive_failures": 0,
+    "subscriber_count": 37800,
+    "video_count": 3,
+    "channel_description": "Catch Podcast UFO live on YouTube\u2014Tuesdays at 8:00 PM ET and sometimes on Thursdays at 8:00 PM ET!\n\nPodcast UFO is your destination for captivating discussions on UFOs, close encounters, and the people at the heart of these mysteries. Hear eyewitness accounts, expert insights, and deep dives into sightings, cover-ups, and government secrecy.\n\nWant to be part of the conversation? Visit podcastufo.com to learn how to get involved.\n\nSubscribe and join us on the journey into the unknown!\n",
+    "avatar_url": "https://yt3.googleusercontent.com/62_4WsDUOWh_VjeLY9rDOYyBFwFqgPZPLFtrpMusKIDPjZAeQSRpW0yt-ney6omnYj4eNf5V=s900-c-k-c0x00ffffff-no-rj"
   },
   {
     "id": "UCYH8m4zyehr0rN3feBZ4mCA",
@@ -127,13 +169,19 @@
     "priority": 8,
     "active": true,
     "reason": "Regular UAP interviews, witness-account coverage, case histories, and podcast episodes.",
-    "evidence_urls": ["https://www.youtube.com/@SomewhereintheSkies"],
+    "evidence_urls": [
+      "https://www.youtube.com/@SomewhereintheSkies"
+    ],
     "added_by": "manual",
     "added_at": "2026-07-07T00:00:00Z",
     "last_checked_at": null,
     "etag": null,
     "last_modified": null,
-    "consecutive_failures": 0
+    "consecutive_failures": 0,
+    "subscriber_count": 22200,
+    "video_count": 3,
+    "channel_description": "Welcome to the YouTube Channel of Somewhere in the Skies with Ryan Sprague\n\n\n",
+    "avatar_url": "https://yt3.googleusercontent.com/cfiemnaRdcyN4l6M5Q6aSSX3g0cN2oNuJtYkQhW5dquLNfw1b-EjLtetCfnRVzxwoVikhnm5dBA=s900-c-k-c0x00ffffff-no-rj"
   },
   {
     "id": "UCCjG8NtOig0USdrT5D1FpxQ",
@@ -153,7 +201,11 @@
     "last_checked_at": null,
     "etag": null,
     "last_modified": null,
-    "consecutive_failures": 0
+    "consecutive_failures": 0,
+    "subscriber_count": 2720000,
+    "video_count": 3,
+    "channel_description": "America\u2019s source for fact-based, unbiased news for all Americans. \n\ud83d\udcfa Find us on your TV: https://www.newsnationnow.com/joinus/\n\ud83d\udcf1  Download our app: https://nnnow.tv/app \nFor business and partnership inquiries contact business@newsnationnow.com\n\n",
+    "avatar_url": "https://yt3.googleusercontent.com/tWgKmMIT4YwdmT0z5S1MN2bIvoFN8_RvIsAWZbLwQVIpq21RO-_Y4sDzVdpj9l6wWRRz8YeUSg=s900-c-k-c0x00ffffff-no-rj"
   },
   {
     "id": "UCuG2KzrIMe3qoNcuDVpwnXw",
@@ -164,12 +216,18 @@
     "priority": 10,
     "active": true,
     "reason": "High-reach longform interviews and American Alchemy episodes that frequently cover UAP, science, and disclosure claims.",
-    "evidence_urls": ["https://www.youtube.com/@JesseMichels"],
+    "evidence_urls": [
+      "https://www.youtube.com/@JesseMichels"
+    ],
     "added_by": "manual",
     "added_at": "2026-07-07T00:00:00Z",
     "last_checked_at": null,
     "etag": null,
     "last_modified": null,
-    "consecutive_failures": 0
+    "consecutive_failures": 0,
+    "subscriber_count": 662000,
+    "video_count": 2,
+    "channel_description": "Welcome to American Alchemy. Please tune in for new videos WEEKLY, highlighting our time's most heretical thinkers/ideas \ud83d\udef8\n\nSponsor Inquiries \u27a4 sponsor@jessemichelsmedia.com\nMedia Inquiries \u27a4 media@jessemichelsmedia.com\nApply for Jobs \u27a4 apply@jessemichelsmedia.com\n\nGrab your American Alchemy merch! https://www.americanalchemymerch.com\n",
+    "avatar_url": "https://yt3.googleusercontent.com/6zUXelF5bf4NhjYp2lI3fxAsAI9sQmD9yoszqkELp-thWlxH5wvTLN72-bprSBg4AwE431lTG2c=s900-c-k-c0x00ffffff-no-rj"
   }
 ]
