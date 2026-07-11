@@ -18,6 +18,11 @@ from uap_news_hub.observability import record_event
 from uap_news_hub.publish import publish_site
 
 
+from run_multi_model_editorial import custom_runner
+
+def default_editorial(root, **kwargs):
+    return run_youtube_editorial_pipeline(root, runner=custom_runner, **kwargs)
+
 def main(
     root: Path | None = None,
     *,
@@ -26,7 +31,7 @@ def main(
     triage=None,
     download=download_youtube_main,
     transcribe=transcribe_diarize_main,
-    editorial=run_youtube_editorial_pipeline,
+    editorial=default_editorial,
     site_pipeline=run_site_pipeline,
     publisher=publish_site,
 ) -> int:
