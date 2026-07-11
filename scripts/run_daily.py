@@ -8,6 +8,7 @@ add_repo_root_to_path()
 
 from ingest_sources import main as ingest_sources_main
 from download_youtube import main as download_youtube_main
+from update_youtube_channels import main as update_youtube_channels_main
 from transcribe_diarize import main as transcribe_diarize_main
 from uap_news_hub.pipeline import PipelineResult, run_daily, run_site_pipeline
 from uap_news_hub.source_triage import run_source_triage_pipeline
@@ -20,6 +21,7 @@ from uap_news_hub.publish import publish_site
 def main(
     root: Path | None = None,
     *,
+    update_youtube=update_youtube_channels_main,
     ingest=ingest_sources_main,
     triage=None,
     download=download_youtube_main,
@@ -34,6 +36,11 @@ def main(
     lock_path = root / "data" / "run.lock"
 
     def _run() -> PipelineResult:
+        try:
+            update_youtube()
+        except Exception as e:
+            record_event(root, "youtube_metadata_update_failed", level="warning", error=str(e))
+            
         try:
             ingest_result = ingest(root, max_packets=settings.daily_packet_cap)
         except TypeError:

@@ -118,7 +118,7 @@ def test_run_daily_main_ingests_downloads_and_transcribes_before_building(tmp_pa
         events.append(("editorial", Path(root_arg)))
         return type("Result", (), {"agy_calls": 0})()
 
-    exit_code = run_daily_main(root, ingest=ingest, triage=triage, download=download, transcribe=transcribe, editorial=editorial)
+    exit_code = run_daily_main(root, update_youtube=lambda: None, ingest=ingest, triage=triage, download=download, transcribe=transcribe, editorial=editorial)
 
     assert exit_code == 0
     assert events == [("ingest", root), ("triage", root), ("download", root), ("transcribe", root), ("editorial", root)]
@@ -171,7 +171,7 @@ def test_run_daily_main_uses_structured_triage_result_with_default_import(tmp_pa
         lambda root_arg, **kwargs: type("Result", (), {"agy_calls": 2})(),
     )
 
-    exit_code = run_daily.main(root, ingest=ingest, download=download, transcribe=transcribe, editorial=editorial)
+    exit_code = run_daily.main(root, update_youtube=lambda: None, ingest=ingest, download=download, transcribe=transcribe, editorial=editorial)
 
     assert exit_code == 0
     assert events == [
