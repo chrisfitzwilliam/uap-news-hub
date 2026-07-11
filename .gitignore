@@ -5,6 +5,7 @@ __pycache__/
 .pytest-tmp/
 .mypy_cache/
 .ruff_cache/
+.superpowers/
 *.pyc
 data/downloads/
 data/source-packets/

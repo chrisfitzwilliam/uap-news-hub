@@ -1,6 +1,6 @@
 # Skyledger Redesign Design Specification
 **Date:** 2026-07-10
-**Domain:** skyledger.site
+**Domain:** skyledger.space
 
 ## 1. Brand & Tone
 - **Name:** Skyledger

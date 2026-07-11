@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Integrated the high-fidelity UI redesign assets (Skyledger Website Redesign.zip) across all templates, establishing the final layout, animations, and inline styling.
 - Completed full-site redesign implementation using the "Night Sky Observatory" visual language and "Briefing + Evidence Grid" homepage hierarchy.
 - Configured custom domain `skyledger.space` using Cloudflare DNS and GitHub Pages.
 - Resumed redesign and domain work, finalized the publication name as Skyledger, and completed implementation.
