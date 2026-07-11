@@ -19,7 +19,7 @@
 - [ ] Complete seven consecutive `supervised` daily runs; inspect each candidate, log event, and stale-status alert.
 - [ ] Re-transcribe the queued Burlison candidate with `small` and independently corroborate it before publication.
 - [x] Create the public GitHub repository, configure Pages to deploy from Actions, set the Pages URL variable, and verify green deployments.
-- [ ] Configure unattended Git authentication for the scheduled account.
+- [x] Configure unattended Git authentication for the scheduled account.
 - [x] Set `UAPNEWSHUB_SITE_URL` to `https://chrisfitzwilliam.github.io/uap-news-hub` in the repository Actions variable.
 - [ ] Set a production contact endpoint.
 - [x] Purchase/configure the custom domain, then verify canonical URLs, RSS, sitemap, robots, HTTPS, and Pages deployment.

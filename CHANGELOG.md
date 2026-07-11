@@ -3,6 +3,12 @@
 ## Unreleased
 
 - Integrated the high-fidelity UI redesign assets (Skyledger Website Redesign.zip) across all templates, establishing the final layout, animations, and inline styling.
+- Created `scripts/update_youtube_channels.py` using `yt-dlp` to scrap subscriber counts, channel descriptions, average view counts (from last 10 videos), and download avatars.
+- Replaced the dummy "Activity" meter on the YouTube dashboard (`templates/youtube/index.html`) with actual subscriber and average views data.
+- Fixed the static site builder (`uap_news_hub/build.py`) to copy assets recursively (`templates/assets` -> `site/assets`), ensuring images, CSS, and JS files deploy correctly.
+- Enabled the starfield background canvas animation dynamically in `app.js` via exports from `starfield.js`.
+- Integrated `update_youtube_channels.py` directly into the automated `run_daily.py` pipeline (wrapped in `try/except` for network resilience).
+- Patched unit tests (`test_pipeline.py`) to mock live YouTube metadata fetches, preventing network-based test suite hangs.
 - Completed full-site redesign implementation using the "Night Sky Observatory" visual language and "Briefing + Evidence Grid" homepage hierarchy.
 - Configured custom domain `skyledger.space` using Cloudflare DNS and GitHub Pages.
 - Resumed redesign and domain work, finalized the publication name as Skyledger, and completed implementation.
