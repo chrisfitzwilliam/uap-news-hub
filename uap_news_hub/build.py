@@ -644,17 +644,17 @@ def build_site(
     (site_dir / "youtube").mkdir(parents=True, exist_ok=True)
     (site_dir / ".nojekyll").write_text("", encoding="utf-8")
 
-    css_source = Path("templates/assets/css/theme.css")
-    if css_source.exists():
-        (site_dir / "assets" / "css" / "theme.css").write_text(css_source.read_text(encoding="utf-8"), encoding="utf-8")
-    (site_dir / "assets" / "img" / "favicon.svg").write_text(
-        """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#121b27"/><circle cx="32" cy="32" r="12" fill="#9ec1ff"/><path d="M19 39c8-11 18-11 26 0" stroke="#e5edf5" stroke-width="4" fill="none" stroke-linecap="round"/></svg>""",
-        encoding="utf-8",
-    )
-    (site_dir / "assets" / "js" / "app.js").write_text(
-        "document.documentElement.dataset.js = 'enabled';\n",
-        encoding="utf-8",
-    )
+    assets_source = Path("templates/assets")
+    if assets_source.exists():
+        shutil.copytree(assets_source, site_dir / "assets", dirs_exist_ok=True)
+    
+    # Ensure favicon exists
+    favicon_path = site_dir / "assets" / "img" / "favicon.svg"
+    if not favicon_path.exists():
+        favicon_path.write_text(
+            """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#121b27"/><circle cx="32" cy="32" r="12" fill="#9ec1ff"/><path d="M19 39c8-11 18-11 26 0" stroke="#e5edf5" stroke-width="4" fill="none" stroke-linecap="round"/></svg>""",
+            encoding="utf-8",
+        )
 
     raw_articles = _load_articles(content_dir)
     articles = [_article_context(article, site_url) for article in raw_articles]
