@@ -49,4 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerleave', leave);
   });
+
+  // Initialize starfield if present
+  const starfieldCanvas = document.getElementById('sky-home-canvas') || document.getElementById('sky-yt-canvas');
+  if (starfieldCanvas) {
+    import('./starfield.js').then(({ initStarfield }) => {
+      initStarfield(starfieldCanvas, { density: 1, shooting: true });
+    }).catch(err => console.error('Failed to load starfield.js', err));
+  }
 });

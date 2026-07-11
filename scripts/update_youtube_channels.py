@@ -1,8 +1,11 @@
 import json
 import os
 import sys
+import socket
 import urllib.request
 from pathlib import Path
+
+socket.setdefaulttimeout(15)
 
 def main():
     root = Path(__file__).resolve().parent.parent
@@ -84,9 +87,16 @@ def main():
                 print(f"  Failed to fetch info for {url}: {e}")
                 
     if updated:
-        with open(registry_path, "w", encoding="utf-8") as f:
-            json.dump(channels, f, indent=2)
-            f.write("\n")
+        temp_path = registry_path.with_suffix(".json.tmp")
+        try:
+            with open(temp_path, "w", encoding="utf-8") as f:
+                json.dump(channels, f, indent=2)
+                f.write("\n")
+            os.replace(temp_path, registry_path)
+        except Exception as e:
+            if temp_path.exists():
+                temp_path.unlink()
+            print(f"Failed to write registry: {e}")
         print("Finished updating youtube_channels.json and downloading avatars.")
 
 if __name__ == "__main__":

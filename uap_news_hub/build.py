@@ -56,7 +56,7 @@ DEFAULT_TEMPLATES = {
   <link rel="alternate" type="application/rss+xml" title="UFO / UAP News Hub RSS" href="{{ site_root }}/rss.xml">
   <link rel="icon" href="{{ site_root }}/assets/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="{{ site_root }}/assets/css/theme.css">
-  <script defer src="{{ site_root }}/assets/js/app.js"></script>
+  <script type="module" src="{{ site_root }}/assets/js/app.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
@@ -651,6 +651,7 @@ def build_site(
     # Ensure favicon exists
     favicon_path = site_dir / "assets" / "img" / "favicon.svg"
     if not favicon_path.exists():
+        favicon_path.parent.mkdir(parents=True, exist_ok=True)
         favicon_path.write_text(
             """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#121b27"/><circle cx="32" cy="32" r="12" fill="#9ec1ff"/><path d="M19 39c8-11 18-11 26 0" stroke="#e5edf5" stroke-width="4" fill="none" stroke-linecap="round"/></svg>""",
             encoding="utf-8",
